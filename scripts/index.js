@@ -12,7 +12,7 @@ ctx.fillRect(0, 0, width, height);
 const pixelData = ctx.getImageData(0, 0, width, height);
 const equivPixelArr = new Array(pixelData.data.length / 4);
 
-const sandpile = 80;
+const sandpile = 16;
 
 // Loop through image pixels, skipping green, blue, and alpha indices;
 for (let i = 0; i < pixelData.data.length; i += 4) {
@@ -101,28 +101,27 @@ function paint(index) {
 }
 
 function topple(index) {
+  equivPixelArr[index] -= 4;
   // Send one grain up
   equivPixelArr[index - width] += 1;
+  equivPixelArr[index - width] > 3 && topple(equivPixelArr[index - width]);
   // Send one grain right
   equivPixelArr[index + 1] += 1;
+  equivPixelArr[index + 1] > 3 && topple(equivPixelArr[index + 1]);
   // Send one grain down
   equivPixelArr[index + width] += 1;
+  equivPixelArr[index + width] > 3 && topple(equivPixelArr[index + width]);
   // Send one grain left
   equivPixelArr[index - 1] += 1;
+  equivPixelArr[index - 1] > 3 && topple(equivPixelArr[index - 1]);
 }
 
 function update() {
   // Distribute sandpile for every cell and topple
   for (let i = 0; i < equivPixelArr.length; i++) {
-    if (equivPixelArr[i] > 3) {
-      paint(i);
-      // console.log(`Index ${i} had ${equivPixelArr[i]} grains of sand`);
-      equivPixelArr[i] -= 4;
-      // console.log(`Index ${i} now has ${equivPixelArr[i]} grains of sand`);
-      topple(i);
-    }
-    // console.log("Painting others: " + i);
-    // console.log("Condition met");
+    equivPixelArr[i] > 3 && topple(i);
+  }
+  for (let i = 0; i < equivPixelArr.length; i++) {
     paint(i);
   }
 }
