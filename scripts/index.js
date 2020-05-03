@@ -12,16 +12,18 @@ ctx.fillRect(0, 0, width, height);
 const pixelData = ctx.getImageData(0, 0, width, height);
 const equivPixelArr = new Array(pixelData.data.length / 4);
 
-const sandpile = 800;
+const sandpile = 80;
 
 // Loop through image pixels, skipping green, blue, and alpha indices;
 for (let i = 0; i < pixelData.data.length; i += 4) {
   equivPixelArr[i / 4] = 0; // Equivalent index for the straight array
 }
 
+const seedPixelIndex = equivPixelArr.length / 2 + 150;
+
 function populate() {
   // Find center
-  equivPixelArr[equivPixelArr.length / 2 + 150] = sandpile;
+  equivPixelArr[seedPixelIndex] = sandpile;
   console.log(
     `Populating index ${equivPixelArr.length / 2 + 150} with ${sandpile} grains`
   );
