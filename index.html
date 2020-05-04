@@ -7,8 +7,55 @@
     <title>Sandpiles</title>
   </head>
   <body>
-    <canvas id="sandpile-canvas" width="500" height="500"></canvas>
+    <main>
+      <div id="canvas-div">
+        <canvas id="sandpile-canvas" width="300" height="300"></canvas>
+      </div>
+      <aside class="slider-div">
+        <label>
+          Sand amount<br />
+          <input
+            type="number"
+            id="sandpile"
+            value="0"
+            min="1"
+            max="100000"
+            step="1"
+            size="15px"
+          /><input type="button" id="add-sand" value="Add sand to pile" />
+        </label>
+        <label
+          >Timestep<br /><input
+            type="range"
+            id="timestep-slider"
+            name="timestep"
+            value="1"
+            min="0"
+            max="100"
+            step="1"
+            oninput="document.getElementById('timestep-value').value=this.value" />
+          <input
+            type="number"
+            id="timestep-value"
+            value="1"
+            min="0"
+            max="1000"
+            step="1"
+            size="15px"
+            oninput="document.getElementById('timestep-slider').value=this.value"
+        /></label>
 
+        <label
+          >Pause/Unpause simulation<br /><input
+            type="button"
+            id="pause-button"
+            value="||>"
+        /></label>
+        <label
+          >Reset canvas<input type="button" id="reset" value="Reset canvas"
+        /></label>
+      </aside>
+    </main>
     <script src="./scripts/index.js" type="module"></script>
   </body>
 </html>

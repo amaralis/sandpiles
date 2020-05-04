@@ -3,3 +3,42 @@
   margin: 0;
   box-sizing: border-box;
 }
+
+body {
+  background-color: #333;
+}
+
+main {
+  display: flex;
+}
+
+.slider-div {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: space-around;
+  padding: 50px;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.slider-div input {
+  margin: 1rem;
+  font-size: 1.5rem;
+}
+
+.slider-div input[type="number"] {
+  width: 90px;
+}
+
+#sandpile {
+  width: 120px;
+}
+
+#pause-button {
+  width: 50px;
+}
+
+#add-sand {
+  padding: 1rem;
+}

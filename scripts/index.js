@@ -4,19 +4,50 @@ const height = canvas.height;
 const ctx = canvas.getContext("2d");
 ctx.fillRect(0, 0, width, height);
 
+const timestepSlider = document.querySelector("#timestep-slider");
+let sliderVal = timestepSlider.value;
+let pause = false;
+
+const pauseBtn = document.querySelector("#pause-button");
+
+pauseBtn.addEventListener("click", () => {
+  if (pause === false) {
+    pause = true;
+  } else {
+    pause = false;
+    draw();
+  }
+});
+
+const sandInput = document.querySelector("#sandpile");
+const sandBtn = document.querySelector("#add-sand");
+let sandVal = sandInput.value;
+sandBtn.addEventListener("click", () => {
+  sandVal = sandInput.value;
+  sandpile = sandVal;
+  console.log(sandVal);
+});
+
+const reset = document.querySelector("#reset");
+reset.addEventListener("click", () => {
+  pause = true;
+  for (let i = 0; i < equivPixelArr.length; i++) {
+    equivPixelArr[i] = 0;
+    nextPixelArr[i] = 0;
+  }
+
+  ctx.fillRect(0, 0, width, height);
+});
+
 canvas.addEventListener("click", (e) => {
   mouseX = e.clientX;
   mouseY = e.clientY;
 });
 
 canvas.addEventListener("click", (e) => {
-  console.log(mouseX + mouseY * width);
   seedPixelIndex = mouseX + mouseY * width;
   populate();
   draw();
-
-  console.log(seedPixelIndex);
-  console.log(equivPixelArr.length);
 });
 
 function drawRectFull(index) {
@@ -127,12 +158,6 @@ function leftEdge(arr, width) {
 function populate() {
   // Find center
   equivPixelArr[seedPixelIndex] = sandpile;
-  console.log(`array's seed index is ${seedPixelIndex}
-  It has ${sandpile} grains`);
-  //paint(seedPixelIndex);
-  console.log(
-    `Populating index ${equivPixelArr.length / 2 + 150} with ${sandpile} grains`
-  );
 }
 
 const pixelData = ctx.getImageData(0, 0, width, height);
@@ -155,7 +180,7 @@ let mouseX = 0;
 let mouseY = 0;
 
 let seedPixelIndex = 0;
-const sandpile = 10000;
+let sandpile = sandVal;
 
 function update() {
   nextPixelArr = new Array(pixelData.data.length / 4);
@@ -187,10 +212,17 @@ function paintEverything() {
   }
 }
 
-function draw() {
-  for (let i = 0; i < 100; i++) {
-    update();
+function pauseUnpause() {
+  if (pause === false) {
+    for (let i = 0; i < timestepSlider.value; i++) {
+      update();
+    }
+    paintEverything();
+    requestAnimationFrame(draw);
   }
-  paintEverything();
-  requestAnimationFrame(draw);
 }
+
+function draw() {
+  pauseUnpause();
+}
+draw();
