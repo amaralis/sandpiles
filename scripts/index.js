@@ -4,15 +4,6 @@ const height = canvas.height;
 const ctx = canvas.getContext("2d");
 ctx.fillRect(0, 0, width, height);
 
-function populate() {
-  // Find center
-  equivPixelArr[seedPixelIndex] = sandpile;
-  //paint(seedPixelIndex);
-  console.log(
-    `Populating index ${equivPixelArr.length / 2 + 150} with ${sandpile} grains`
-  );
-}
-
 function drawRectFull(index) {
   ctx.fillStyle = "yellow";
   ctx.fillRect(
@@ -92,14 +83,43 @@ function toppleLeft(currentIndex) {
   //paint(nextPixelArr[currentIndex]);
 }
 
-function topple(currentIindex) {
-  nextPixelArr[currentIindex] += equivPixelArr[currentIindex] - 4;
+function topple(currentIndex) {
+  nextPixelArr[currentIndex] += equivPixelArr[currentIndex] - 4;
 
-  //paint(nextPixelArr[currentIindex]);
-  toppleUp(currentIindex - width);
-  toppleRight(currentIindex + 1);
-  toppleDown(currentIindex + width);
-  toppleLeft(currentIindex - 1);
+  //paint(nextPixelArr[currentIndex]);
+  !(currentIndex < width) && toppleUp(currentIndex - width);
+  !rightEdgeArr.includes(currentIndex) && toppleRight(currentIndex + 1);
+  !(currentIndex > nextPixelArr.length - width) &&
+    toppleDown(currentIndex + width);
+  !leftEdgeArr.includes(currentIndex) && toppleLeft(currentIndex - 1);
+}
+
+let rightEdgeArr = [];
+let leftEdgeArr = [];
+
+function rightEdge(arr, width) {
+  console.log("test");
+  for (let i = 0; i <= arr.length; i += width) {
+    i > 0 && rightEdgeArr.push(i - 1);
+    console.log(i);
+  }
+}
+
+function leftEdge(arr, width) {
+  console.log("test");
+  for (let i = 0; i <= arr.length; i += width) {
+    i > 0 && leftEdgeArr.push(i);
+    console.log(i);
+  }
+}
+
+function populate() {
+  // Find center
+  equivPixelArr[seedPixelIndex] = sandpile;
+  //paint(seedPixelIndex);
+  console.log(
+    `Populating index ${equivPixelArr.length / 2 + 150} with ${sandpile} grains`
+  );
 }
 
 const pixelData = ctx.getImageData(0, 0, width, height);
@@ -115,8 +135,11 @@ for (let i = 0; i < pixelData.data.length; i += 4) {
   equivPixelArr[i / 4] = 0; // Equivalent index for the straight array
 }
 
+rightEdge(equivPixelArr, width);
+leftEdge(equivPixelArr, width);
+
 const seedPixelIndex = equivPixelArr.length / 2 + 150;
-const sandpile = 30000;
+const sandpile = 50000;
 
 function update() {
   nextPixelArr = new Array(pixelData.data.length / 4);
