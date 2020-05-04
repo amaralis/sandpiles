@@ -9,21 +9,10 @@ const ctx = canvas.getContext("2d");
 // ctx.fillStyle = "red";
 ctx.fillRect(0, 0, width, height);
 
-const pixelData = ctx.getImageData(0, 0, width, height);
-const equivPixelArr = new Array(pixelData.data.length / 4);
-
-const sandpile = 16;
-
-// Loop through image pixels, skipping green, blue, and alpha indices;
-for (let i = 0; i < pixelData.data.length; i += 4) {
-  equivPixelArr[i / 4] = 0; // Equivalent index for the straight array
-}
-
-const seedPixelIndex = equivPixelArr.length / 2 + 150;
-
 function populate() {
   // Find center
   equivPixelArr[seedPixelIndex] = sandpile;
+  paint(seedPixelIndex);
   console.log(
     `Populating index ${equivPixelArr.length / 2 + 150} with ${sandpile} grains`
   );
@@ -100,30 +89,133 @@ function paint(index) {
   equivPixelArr[index] === 0 && drawRect0(index);
 }
 
-function topple(index) {
-  equivPixelArr[index] -= 4;
-  // Send one grain up
-  equivPixelArr[index - width] += 1;
-  equivPixelArr[index - width] > 3 && topple(equivPixelArr[index - width]);
-  // Send one grain right
-  equivPixelArr[index + 1] += 1;
-  equivPixelArr[index + 1] > 3 && topple(equivPixelArr[index + 1]);
-  // Send one grain down
-  equivPixelArr[index + width] += 1;
-  equivPixelArr[index + width] > 3 && topple(equivPixelArr[index + width]);
-  // Send one grain left
-  equivPixelArr[index - 1] += 1;
-  equivPixelArr[index - 1] > 3 && topple(equivPixelArr[index - 1]);
+function toppleUp(currentIndex) {
+  nextPixelArr[currentIndex]++;
+  paint(nextPixelArr[currentIndex]);
+
+  // if (equivPixelArr[currentIndex - 1] > 4) {
+  //   equivPixelArr[currentIndex] -= 4;
+  //   toppleLeft(currentIndex - 1);
+  // }
+  // if (equivPixelArr[currentIndex + 1] > 4) {
+  //   equivPixelArr[currentIndex] -= 4;
+  //   toppleRight(currentIndex + 1);
+  // }
+}
+function toppleRight(currentIndex) {
+  nextPixelArr[currentIndex]++;
+  paint(nextPixelArr[currentIndex]);
+
+  // if (equivPixelArr[currentIndex - width] > 4) {
+  //   equivPixelArr[currentIndex] -= 4;
+  //   toppleUp(currentIndex - width);
+  // }
+  // if (equivPixelArr[currentIndex + width] > 4) {
+  //   equivPixelArr[currentIndex] -= 4;
+  //   toppleDown(currentIndex + width);
+  // }
+}
+function toppleDown(currentIndex) {
+  nextPixelArr[currentIndex]++;
+  paint(nextPixelArr[currentIndex]);
+
+  // if (equivPixelArr[currentIndex + 1] < 4) {
+  //   equivPixelArr[currentIndex] -= 4;
+  //   toppleRight(currentIndex + 1);
+  // }
+  // if (equivPixelArr[currentIndex - 1] < 4) {
+  //   equivPixelArr[currentIndex] -= 4;
+  //   toppleLeft(currentIndex - 1);
+  // }
+}
+function toppleLeft(currentIndex) {
+  nextPixelArr[currentIndex]++;
+  paint(nextPixelArr[currentIndex]);
+
+  // if (equivPixelArr[currentIndex - width] > 4) {
+  //   equivPixelArr[currentIndex] -= 4;
+  //   toppleUp(currentIndex - width);
+  // }
+  // if (equivPixelArr[currentIndex + width] > 4) {
+  //   equivPixelArr[currentIndex] -= 4;
+  //   toppleDown(currentIndex + width);
+  // }
 }
 
+function topple(currentIindex) {
+  // console.log("---Toppling---");
+  let num = equivPixelArr[currentIindex];
+  // console.log(
+  //   `equivArr ${currentIindex} has ${equivPixelArr[currentIindex]} grains`
+  // );
+  // console.log(
+  //   `nextArr ${currentIindex} has ${nextPixelArr[currentIindex]} grains`
+  // );
+
+  nextPixelArr[currentIindex] += equivPixelArr[currentIindex] - 4;
+
+  // console.log(
+  //   `equivArr ${currentIindex} has ${equivPixelArr[currentIindex]} grains`
+  // );
+  // console.log(
+  //   `nextArr ${currentIindex} has ${nextPixelArr[currentIindex]} grains`
+  // );
+  paint(nextPixelArr[currentIindex]);
+  toppleUp(currentIindex - width);
+  toppleRight(currentIindex + 1);
+  toppleDown(currentIindex + width);
+  toppleLeft(currentIindex - 1);
+}
+
+const pixelData = ctx.getImageData(0, 0, width, height);
+
+let equivPixelArr = new Array(pixelData.data.length / 4);
+let nextPixelArr = new Array(pixelData.data.length / 4);
+for (let i = 0; i < nextPixelArr.length; i++) {
+  nextPixelArr[i] = 0;
+}
+
+// Loop through image pixels, skipping green, blue, and alpha indices;
+for (let i = 0; i < pixelData.data.length; i += 4) {
+  equivPixelArr[i / 4] = 0; // Equivalent index for the straight array
+}
+
+const seedPixelIndex = equivPixelArr.length / 2 + 150;
+const sandpile = 3000;
+
 function update() {
+  nextPixelArr = new Array(pixelData.data.length / 4);
+  for (let i = 0; i < nextPixelArr.length; i++) {
+    nextPixelArr[i] = 0;
+  }
+
+  // console.log("---Updating---");
+
   // Distribute sandpile for every cell and topple
   for (let i = 0; i < equivPixelArr.length; i++) {
-    equivPixelArr[i] > 3 && topple(i);
+    if (equivPixelArr[i] < 4) {
+      nextPixelArr[i] = equivPixelArr[i];
+
+      paint(i);
+    }
   }
+
   for (let i = 0; i < equivPixelArr.length; i++) {
-    paint(i);
+    if (equivPixelArr[i] > 3) {
+      // console.log("Seed equivArr: ", equivPixelArr[45150]);
+      // console.log("Next arr: ", nextPixelArr[45150]);
+      topple(i);
+      paint(i);
+    }
   }
+
+  // console.log("Seed equivArr: ", equivPixelArr[45150]);
+  // console.log("Next arr: ", nextPixelArr[45150]);
+
+  equivPixelArr = nextPixelArr;
+
+  // console.log("Seed equivArr: ", equivPixelArr[45150]);
+  // console.log("Next arr: ", nextPixelArr[45150]);
 }
 
 populate();
@@ -132,6 +224,23 @@ populate();
 //     equivPixelArr[equivPixelArr.length / 2 + 150]
 //   } grains of sand`
 // );
+// console.log("Seed equivArr has", equivPixelArr[45150]);
+// console.log("Next arr has", nextPixelArr[45150]);
+
+// console.log(
+//   `equivPixelArr 45150 (seed) has ${equivPixelArr[45150]} grains of sand`
+// );
+// console.log(`equivPixelArr 45151 has ${equivPixelArr[45151]} grains of sand`);
+// console.log(`equivPixelArr 45149 has ${equivPixelArr[45149]} grains of sand`);
+// console.log(`equivPixelArr 45450 has ${equivPixelArr[45450]} grains of sand`);
+// console.log(`equivPixelArr 44485 has ${equivPixelArr[44850]} grains of sand`);
+// console.log(
+//   `nextPixelArr 45150 (seed) has ${nextPixelArr[45150]} grains of sand`
+// );
+// console.log(`nextPixelArr 45151 has ${nextPixelArr[45151]} grains of sand`);
+// console.log(`nextPixelArr 45149 has ${nextPixelArr[45149]} grains of sand`);
+// console.log(`nextPixelArr 45450 has ${nextPixelArr[45450]} grains of sand`);
+// console.log(`nextPixelArr 44485 has ${nextPixelArr[44850]} grains of sand`);
 
 // update();
 
@@ -140,7 +249,25 @@ populate();
 // console.log(`Index 45149 has ${equivPixelArr[45149]} grains of sand`);
 // console.log(`Index 45450 has ${equivPixelArr[45450]} grains of sand`);
 // console.log(`Index 44485 has ${equivPixelArr[44850]} grains of sand`);
+// console.log(
+//   `nextPixelArr 45150 (seed) has ${nextPixelArr[45150]} grains of sand`
+// );
+// console.log(`nextPixelArr 45151 has ${nextPixelArr[45151]} grains of sand`);
+// console.log(`nextPixelArr 45149 has ${nextPixelArr[45149]} grains of sand`);
+// console.log(`nextPixelArr 45450 has ${nextPixelArr[45450]} grains of sand`);
+// console.log(`nextPixelArr 44485 has ${nextPixelArr[44850]} grains of sand`);
 
+// update();
+// update();
+// update();
+// update();
+// update();
+// update();
+// update();
+// update();
+// update();
+// update();
+// update();
 // update();
 
 // console.log(`Index 45150 (seed) has ${equivPixelArr[45150]} grains of sand`);
@@ -148,41 +275,18 @@ populate();
 // console.log(`Index 45149 has ${equivPixelArr[45149]} grains of sand`);
 // console.log(`Index 45450 has ${equivPixelArr[45450]} grains of sand`);
 // console.log(`Index 44485 has ${equivPixelArr[44850]} grains of sand`);
-
-// update();
-
-// console.log(`Index 45150 (seed) has ${equivPixelArr[45150]} grains of sand`);
-// console.log(`Index 45151 has ${equivPixelArr[45151]} grains of sand`);
-// console.log(`Index 45149 has ${equivPixelArr[45149]} grains of sand`);
-// console.log(`Index 45450 has ${equivPixelArr[45450]} grains of sand`);
-// console.log(`Index 44485 has ${equivPixelArr[44850]} grains of sand`);
-
-// update();
-
-// console.log(`Index 45150 (seed) has ${equivPixelArr[45150]} grains of sand`);
-// console.log(`Index 45151 has ${equivPixelArr[45151]} grains of sand`);
-// console.log(`Index 45149 has ${equivPixelArr[45149]} grains of sand`);
-// console.log(`Index 45450 has ${equivPixelArr[45450]} grains of sand`);
-// console.log(`Index 44485 has ${equivPixelArr[44850]} grains of sand`);
-
-// update();
-
-// console.log(`Index 45150 (seed) has ${equivPixelArr[45150]} grains of sand`);
-// console.log(`Index 45151 has ${equivPixelArr[45151]} grains of sand`);
-// console.log(`Index 45149 has ${equivPixelArr[45149]} grains of sand`);
-// console.log(`Index 45450 has ${equivPixelArr[45450]} grains of sand`);
-// console.log(`Index 44485 has ${equivPixelArr[44850]} grains of sand`);
-
-// update();
-
-// console.log(`Index 45150 (seed) has ${equivPixelArr[45150]} grains of sand`);
-// console.log(`Index 45151 has ${equivPixelArr[45151]} grains of sand`);
-// console.log(`Index 45149 has ${equivPixelArr[45149]} grains of sand`);
-// console.log(`Index 45450 has ${equivPixelArr[45450]} grains of sand`);
-// console.log(`Index 44485 has ${equivPixelArr[44850]} grains of sand`);
+// console.log(
+//   `nextPixelArr 45150 (seed) has ${nextPixelArr[45150]} grains of sand`
+// );
+// console.log(`nextPixelArr 45151 has ${nextPixelArr[45151]} grains of sand`);
+// console.log(`nextPixelArr 45149 has ${nextPixelArr[45149]} grains of sand`);
+// console.log(`nextPixelArr 45450 has ${nextPixelArr[45450]} grains of sand`);
+// console.log(`nextPixelArr 44485 has ${nextPixelArr[44850]} grains of sand`);
 
 function draw() {
-  update();
+  for (let i = 0; i < 30; i++) {
+    update();
+  }
   requestAnimationFrame(draw);
 }
 draw();
