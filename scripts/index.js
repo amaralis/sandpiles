@@ -4,6 +4,21 @@ const height = canvas.height;
 const ctx = canvas.getContext("2d");
 ctx.fillRect(0, 0, width, height);
 
+canvas.addEventListener("click", (e) => {
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+});
+
+canvas.addEventListener("click", (e) => {
+  console.log(mouseX + mouseY * width);
+  seedPixelIndex = mouseX + mouseY * width;
+  populate();
+  draw();
+
+  console.log(seedPixelIndex);
+  console.log(equivPixelArr.length);
+});
+
 function drawRectFull(index) {
   ctx.fillStyle = "yellow";
   ctx.fillRect(
@@ -14,7 +29,7 @@ function drawRectFull(index) {
   );
 }
 function drawRect3(index) {
-  ctx.fillStyle = "cyan";
+  ctx.fillStyle = "#DFCE9D";
   ctx.fillRect(
     index % width, // x
     index / width, // y
@@ -23,7 +38,7 @@ function drawRect3(index) {
   );
 }
 function drawRect2(index) {
-  ctx.fillStyle = "green";
+  ctx.fillStyle = "#C2B280";
   ctx.fillRect(
     index % width, // x
     index / width, // y
@@ -32,7 +47,7 @@ function drawRect2(index) {
   );
 }
 function drawRect1(index) {
-  ctx.fillStyle = "red";
+  ctx.fillStyle = "#1D5171";
   ctx.fillRect(
     index % width, // x
     index / width, // y
@@ -98,24 +113,22 @@ let rightEdgeArr = [];
 let leftEdgeArr = [];
 
 function rightEdge(arr, width) {
-  console.log("test");
   for (let i = 0; i <= arr.length; i += width) {
     i > 0 && rightEdgeArr.push(i - 1);
-    console.log(i);
   }
 }
 
 function leftEdge(arr, width) {
-  console.log("test");
   for (let i = 0; i <= arr.length; i += width) {
     i > 0 && leftEdgeArr.push(i);
-    console.log(i);
   }
 }
 
 function populate() {
   // Find center
   equivPixelArr[seedPixelIndex] = sandpile;
+  console.log(`array's seed index is ${seedPixelIndex}
+  It has ${sandpile} grains`);
   //paint(seedPixelIndex);
   console.log(
     `Populating index ${equivPixelArr.length / 2 + 150} with ${sandpile} grains`
@@ -138,8 +151,11 @@ for (let i = 0; i < pixelData.data.length; i += 4) {
 rightEdge(equivPixelArr, width);
 leftEdge(equivPixelArr, width);
 
-const seedPixelIndex = equivPixelArr.length / 2 + 150;
-const sandpile = 50000;
+let mouseX = 0;
+let mouseY = 0;
+
+let seedPixelIndex = 0;
+const sandpile = 10000;
 
 function update() {
   nextPixelArr = new Array(pixelData.data.length / 4);
@@ -147,7 +163,7 @@ function update() {
     nextPixelArr[i] = 0;
   }
 
-  // Distribute sandpile for every cell and topple
+  // Copy every cell that won't topple to next step's array
   for (let i = 0; i < equivPixelArr.length; i++) {
     if (equivPixelArr[i] < 4) {
       nextPixelArr[i] = equivPixelArr[i];
@@ -165,8 +181,6 @@ function update() {
   equivPixelArr = nextPixelArr;
 }
 
-populate();
-
 function paintEverything() {
   for (let i = 0; i < equivPixelArr.length; i++) {
     paint(i);
@@ -180,4 +194,3 @@ function draw() {
   paintEverything();
   requestAnimationFrame(draw);
 }
-draw();
