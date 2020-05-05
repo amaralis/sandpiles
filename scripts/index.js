@@ -35,7 +35,7 @@ reset.addEventListener("click", () => {
     equivPixelArr[i] = 0;
     nextPixelArr[i] = 0;
   }
-
+  ctx.fillStyle = "#000";
   ctx.fillRect(0, 0, width, height);
 });
 
@@ -51,7 +51,7 @@ canvas.addEventListener("click", (e) => {
 });
 
 function drawRectFull(index) {
-  ctx.fillStyle = "yellow";
+  ctx.fillStyle = "#92EDE3";
   ctx.fillRect(
     index % width, // x
     index / width, // y
@@ -60,7 +60,7 @@ function drawRectFull(index) {
   );
 }
 function drawRect3(index) {
-  ctx.fillStyle = "#DFCE9D";
+  ctx.fillStyle = "#133964";
   ctx.fillRect(
     index % width, // x
     index / width, // y
@@ -69,7 +69,7 @@ function drawRect3(index) {
   );
 }
 function drawRect2(index) {
-  ctx.fillStyle = "#C2B280";
+  ctx.fillStyle = "#A4610D";
   ctx.fillRect(
     index % width, // x
     index / width, // y
@@ -78,16 +78,7 @@ function drawRect2(index) {
   );
 }
 function drawRect1(index) {
-  ctx.fillStyle = "#1D5171";
-  ctx.fillRect(
-    index % width, // x
-    index / width, // y
-    1,
-    1
-  );
-}
-function drawRect0(index) {
-  ctx.fillStyle = "#000";
+  ctx.fillStyle = "#3F9F7E";
   ctx.fillRect(
     index % width, // x
     index / width, // y
@@ -109,7 +100,6 @@ function paint(index) {
   if (equivPixelArr[index] === 1) {
     drawRect1(index);
   }
-  equivPixelArr[index] === 0 && drawRect0(index);
 }
 
 function toppleUp(currentIndex) {
