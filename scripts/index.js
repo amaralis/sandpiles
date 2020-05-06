@@ -1,3 +1,5 @@
+const bkgrdImg = new Image();
+bkgrdImg.src = "backgroundcanvas.jpg";
 const canvas = document.getElementById("sandpile-canvas");
 const UiCanvas = document.getElementById("ui-canvas");
 UiCanvas.style.position = "absolute";
@@ -7,8 +9,11 @@ const ctx = canvas.getContext("2d");
 const ctxUi = UiCanvas.getContext("2d");
 UiCanvas.style.left = canvas.getBoundingClientRect().left + "px";
 UiCanvas.style.top = canvas.getBoundingClientRect().top + "px";
-ctx.fillStyle = "#000";
-ctx.fillRect(0, 0, width, height);
+// ctx.fillStyle = "#000";
+// ctx.fillRect(0, 0, width, height);
+bkgrdImg.onload = () => {
+  ctx.drawImage(bkgrdImg, 0, 0);
+};
 
 function drawUi() {
   ctxUi.clearRect(0, 0, width, height);
@@ -24,11 +29,11 @@ const pauseBtn = document.querySelector("#pause-button");
 
 function populate() {
   equivPixelArr[seedPixelIndex] = parseInt(sandVal);
-  console.log(equivPixelArr[seedPixelIndex], parseInt(sandVal));
-  console.log(equivPixelArr[seedPixelIndex]);
+  // console.log(equivPixelArr[seedPixelIndex], parseInt(sandVal));
+  // console.log(equivPixelArr[seedPixelIndex]);
   console.log("Populating");
-  ctx.fillStyle = "#000";
-  ctx.fillRect(0, 0, width, height);
+  // ctx.fillStyle = "#000";
+  // ctx.fillRect(0, 0, width, height);
   draw();
 }
 
@@ -40,6 +45,7 @@ pauseBtn.addEventListener("click", () => {
     pauseBtn.previousSibling.textContent = "Paused";
     UiCanvas.style.zIndex = 1;
     canvas.style.zIndex = -1;
+    // ctx.drawImage(bkgrdImg, 0, 0);
     showGuidelines.checked && drawGuidelines();
 
     console.log("Pause was false and now is true");
@@ -49,7 +55,7 @@ pauseBtn.addEventListener("click", () => {
     UiCanvas.style.zIndex = -1;
     console.log("Pause was true and now is false");
     pauseBtn.previousSibling.textContent = "Simulating";
-    ctx.fillStyle = "#000";
+    ctx.drawImage(bkgrdImg, 0, 0);
     draw();
   }
 });
@@ -92,7 +98,7 @@ canvas.addEventListener("click", (e) => {
     seedPixelIndex = mouseX + mouseY * width;
     // ctx.fillStyle = "#000";
     // ctx.fillRect(0, 0, width, height);
-    ctx.clearRect(0, 0, width, height);
+    // ctx.clearRect(0, 0, width, height);
     populate();
   }
 });
@@ -645,8 +651,8 @@ showGuidelines.addEventListener("click", () => {
   if (!showGuidelines.checked && !pause) {
     UiCanvas.style.zIndex = -1;
     canvas.style.zIndex = 1;
-    ctx.fillStyle = "#000";
-    ctx.fillRect(0, 0, width, height);
+    // ctx.fillStyle = "#000";
+    // ctx.fillRect(0, 0, width, height);
     draw();
   }
 });
