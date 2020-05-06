@@ -16,6 +16,13 @@ main {
   z-index: 1;
 }
 
+/* #canvas-wrapper {
+  height: 800px;
+  min-width: 800px;
+  overflow: hidden;
+  background-image: "backgroundcanvas.jpg";
+} */
+
 .controls-div {
   display: flex;
   flex: 1;

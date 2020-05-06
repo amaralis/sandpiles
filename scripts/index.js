@@ -9,8 +9,6 @@ const ctx = canvas.getContext("2d");
 const ctxUi = UiCanvas.getContext("2d");
 UiCanvas.style.left = canvas.getBoundingClientRect().left + "px";
 UiCanvas.style.top = canvas.getBoundingClientRect().top + "px";
-// ctx.fillStyle = "#000";
-// ctx.fillRect(0, 0, width, height);
 bkgrdImg.onload = () => {
   ctx.drawImage(bkgrdImg, 0, 0);
 };
