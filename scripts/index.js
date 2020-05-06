@@ -31,9 +31,7 @@ pauseBtn.addEventListener("click", () => {
   } else {
     pause = false;
     console.log("Pause was true and now is false");
-    ctx.fillStyle = "#000";
-    ctx.fillRect(0, 0, width, height);
-    pauseBtn.previousSibling.textContent = "Play";
+    pauseBtn.previousSibling.textContent = "Simulating";
     draw();
     //populate();
   }
