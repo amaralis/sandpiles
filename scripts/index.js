@@ -22,7 +22,7 @@ function populate() {
 /** ===================== LISTENERS ===================== */
 
 pauseBtn.addEventListener("click", () => {
-  if (pause === false) {
+  if (!pause) {
     pause = true;
     pauseBtn.previousSibling.textContent = "Paused";
     showGuidelines.checked && drawGuidelines();
@@ -32,6 +32,9 @@ pauseBtn.addEventListener("click", () => {
     pause = false;
     console.log("Pause was true and now is false");
     pauseBtn.previousSibling.textContent = "Simulating";
+    ctx.fillStyle = "#000";
+    ctx.fillRect(0, 0, width, height);
+    ctx.clearRect(0, 0, width, height);
     draw();
     //populate();
   }
@@ -556,8 +559,6 @@ function paintEverything() {
 }
 
 function pauseUnpause() {
-  //console.log("Pause/Play");
-  console.log("Pause is " + pause);
   if (pause === false) {
     for (let i = 0; i < timestepInput.value; i++) {
       update();
@@ -611,6 +612,8 @@ drawGuidelines();
 
 function draw() {
   console.log("Rendering main");
+  ctx.fillStyle = "#000";
+  ctx.fillRect(0, 0, width, height);
   pauseUnpause();
 }
 showGuidelines.addEventListener("click", () => {
@@ -619,9 +622,13 @@ showGuidelines.addEventListener("click", () => {
   if (showGuidelines.checked && pause) {
     drawGuidelines();
   }
-  if (!showGuidelines.checked && pause === false) {
+  if (!showGuidelines.checked && !pause) {
     ctx.fillStyle = "#000";
     ctx.fillRect(0, 0, width, height);
     draw();
+  }
+  if (!showGuidelines.checked && pause) {
+    ctx.fillStyle = "#000";
+    ctx.fillRect(0, 0, width, height);
   }
 });
