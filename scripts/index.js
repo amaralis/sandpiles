@@ -600,9 +600,12 @@ const drawGuidelines = () => {
   drawDiagLine4();
 
   // I'm paranoid, leave alone, mmkay?
-  circleAngles < 1000 ? (circleAngles += 0.2) : (circleAngles = 0);
+  circleAngles < 100000 ? (circleAngles += 0.2) : (circleAngles = 0);
+
   circleWidths = Math.sin(circleAngles) + 10;
-  showGuidelines.checked && requestAnimationFrame(drawGuidelines);
+  if (showGuidelines.checked && pause === true) {
+    requestAnimationFrame(drawGuidelines);
+  }
   console.log("Rendering guidelines");
 };
 drawGuidelines();
@@ -612,9 +615,12 @@ function draw() {
   pauseUnpause();
 }
 showGuidelines.addEventListener("click", () => {
-  showGuidelines.checked && drawGuidelines();
   console.log("Show guidelines clicked. It is " + showGuidelines.checked);
-  if (!showGuidelines.checked) {
+  console.log("Show guidelines clicked. Pause is " + pause);
+  if (showGuidelines.checked && pause) {
+    drawGuidelines();
+  }
+  if (!showGuidelines.checked && pause === false) {
     draw();
   }
 });
