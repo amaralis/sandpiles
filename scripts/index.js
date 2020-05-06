@@ -9,8 +9,6 @@ let pause = true;
 
 const pauseBtn = document.querySelector("#pause-button");
 
-let renderGuidelines = true;
-
 function populate() {
   equivPixelArr[seedPixelIndex] = parseInt(sandVal);
   console.log(equivPixelArr[seedPixelIndex], parseInt(sandVal));
@@ -26,13 +24,12 @@ function populate() {
 pauseBtn.addEventListener("click", () => {
   if (pause === false) {
     pause = true;
-    showGuidelines && renderGuidelines == true;
+    showGuidelines.checked && drawGuidelines();
     pauseBtn.previousSibling.textContent = "Play";
-    drawGuidelines();
+
     console.log("Pause was false and now is true");
   } else {
     pause = false;
-    renderGuidelines = false;
     console.log("Pause was true and now is false");
     ctx.fillStyle = "#000";
     ctx.fillRect(0, 0, width, height);
@@ -560,6 +557,8 @@ function paintEverything() {
 }
 
 function pauseUnpause() {
+  console.log("Pause/Play");
+  console.log("Pause is " + pause);
   if (pause === false) {
     for (let i = 0; i < timestepInput.value; i++) {
       update();
@@ -568,11 +567,9 @@ function pauseUnpause() {
     requestAnimationFrame(draw);
   }
 }
-
 const showGuidelines = document.querySelector("#show-guidelines");
+
 const drawGuidelines = () => {
-  console.log("Rendering guidelines");
-  ctx.fillStyle = "#000";
   ctx.fillRect(0, 0, width, height);
   if (centerChkbx.checked) {
     drawCenterPoint();
@@ -606,6 +603,7 @@ const drawGuidelines = () => {
   circleAngles < 1000 ? (circleAngles += 0.2) : (circleAngles = 0);
   circleWidths = Math.sin(circleAngles) + 10;
   showGuidelines.checked && requestAnimationFrame(drawGuidelines);
+  console.log("Rendering guidelines");
 };
 drawGuidelines();
 
@@ -613,3 +611,10 @@ function draw() {
   console.log("Rendering main");
   pauseUnpause();
 }
+showGuidelines.addEventListener("click", () => {
+  showGuidelines.checked && drawGuidelines();
+  console.log("Show guidelines clicked. It is " + showGuidelines.checked);
+  if (!showGuidelines.checked) {
+    draw();
+  }
+});
