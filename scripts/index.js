@@ -29,7 +29,6 @@ function populate() {
   if (freeChkbx.checked) {
     equivPixelArr[seedPixelIndex] = parseInt(sandVal);
     console.log("Populating");
-    draw();
   }
 
   if (centerChkbx.checked) {
@@ -37,7 +36,6 @@ function populate() {
     equivPixelArr[index] = parseInt(sandVal);
 
     console.log("Populating");
-    draw();
   }
 
   if (twoChkbx.checked) {
@@ -59,7 +57,6 @@ function populate() {
     equivPixelArr[indexLeft] = parseInt(sandVal);
 
     console.log("Populating");
-    draw();
   }
 
   if (twoVertChkbx.checked) {
@@ -81,7 +78,6 @@ function populate() {
     equivPixelArr[indexBottom] = parseInt(sandVal);
 
     console.log("Populating");
-    draw();
   }
 
   if (fourChkbx.checked) {
@@ -122,11 +118,16 @@ function populate() {
     equivPixelArr[indexLeftTop] = parseInt(sandVal);
 
     console.log("Populating");
-    draw();
   }
 }
 
 /** ===================== LISTENERS ===================== */
+
+const dumpBtn = document.querySelector("#dump");
+
+dumpBtn.onclick = () => {
+  populate();
+};
 
 pauseBtn.addEventListener("click", () => {
   if (!pause) {
@@ -183,12 +184,9 @@ canvas.addEventListener("click", (e) => {
 });
 
 const freeChkbx = document.querySelector("#free");
-canvas.addEventListener("click", (e) => {
+canvas.addEventListener("click", () => {
   if (freeChkbx.checked) {
     seedPixelIndex = mouseX + mouseY * width;
-    // ctx.fillStyle = "#000";
-    // ctx.fillRect(0, 0, width, height);
-    // ctx.clearRect(0, 0, width, height);
     populate();
   }
 });
@@ -641,7 +639,6 @@ let mouseX = 0;
 let mouseY = 0;
 
 let seedPixelIndex = 0;
-//let sandpile = sandVal;
 
 function update() {
   nextPixelArr = new Array(pixelData.data.length / 4);
