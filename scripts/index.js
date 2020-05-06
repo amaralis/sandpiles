@@ -26,13 +26,104 @@ let pause = true;
 const pauseBtn = document.querySelector("#pause-button");
 
 function populate() {
-  equivPixelArr[seedPixelIndex] = parseInt(sandVal);
-  // console.log(equivPixelArr[seedPixelIndex], parseInt(sandVal));
-  // console.log(equivPixelArr[seedPixelIndex]);
-  console.log("Populating");
-  // ctx.fillStyle = "#000";
-  // ctx.fillRect(0, 0, width, height);
-  draw();
+  if (freeChkbx.checked) {
+    equivPixelArr[seedPixelIndex] = parseInt(sandVal);
+    console.log("Populating");
+    draw();
+  }
+
+  if (centerChkbx.checked) {
+    const index = width / 2 + (height / 2) * width;
+    equivPixelArr[index] = parseInt(sandVal);
+
+    console.log("Populating");
+    draw();
+  }
+
+  if (twoChkbx.checked) {
+    const indexXRight =
+      centerStartPoint.x + spreadVal * Math.cos(degToRad(-rotateVal));
+    const indexYRight =
+      centerStartPoint.y + spreadVal * Math.sin(degToRad(-rotateVal));
+
+    const indexRight =
+      Math.round(indexXRight) + Math.round(indexYRight) * width;
+    equivPixelArr[indexRight] = parseInt(sandVal);
+
+    const indexXLeft =
+      centerStartPoint.x - spreadVal * Math.cos(degToRad(-rotateVal));
+    const indexYLeft =
+      centerStartPoint.y - spreadVal * Math.sin(degToRad(-rotateVal));
+
+    const indexLeft = Math.round(indexXLeft) + Math.round(indexYLeft) * width;
+    equivPixelArr[indexLeft] = parseInt(sandVal);
+
+    console.log("Populating");
+    draw();
+  }
+
+  if (twoVertChkbx.checked) {
+    const indexXTop =
+      centerStartPoint.x + spreadVal * Math.cos(degToRad(-rotateVal - 90));
+    const indexYTop =
+      centerStartPoint.y + spreadVal * Math.sin(degToRad(-rotateVal - 90));
+
+    const indexTop = Math.round(indexXTop) + Math.round(indexYTop) * width;
+    equivPixelArr[indexTop] = parseInt(sandVal);
+
+    const indexXBottom =
+      centerStartPoint.x - spreadVal * Math.cos(degToRad(-rotateVal - 90));
+    const indexYBottom =
+      centerStartPoint.y - spreadVal * Math.sin(degToRad(-rotateVal - 90));
+
+    const indexBottom =
+      Math.round(indexXBottom) + Math.round(indexYBottom) * width;
+    equivPixelArr[indexBottom] = parseInt(sandVal);
+
+    console.log("Populating");
+    draw();
+  }
+
+  if (fourChkbx.checked) {
+    let h = Math.sqrt(Math.pow(spreadVal, 2) + Math.pow(spreadVal, 2));
+
+    const xRightTop =
+      centerStartPoint.x + h * Math.cos(degToRad(-rotateVal - 45));
+    const yRightTop =
+      centerStartPoint.y + h * Math.sin(degToRad(-rotateVal - 45));
+
+    const indexRightTop = Math.round(xRightTop) + Math.round(yRightTop) * width;
+    equivPixelArr[indexRightTop] = parseInt(sandVal);
+
+    const indexXRightBottom =
+      centerStartPoint.x + h * Math.cos(degToRad(-rotateVal + 45));
+    const indexYRightBottom =
+      centerStartPoint.y + h * Math.sin(degToRad(-rotateVal + 45));
+
+    const indexRightBottom =
+      Math.round(indexXRightBottom) + Math.round(indexYRightBottom) * width;
+    equivPixelArr[indexRightBottom] = parseInt(sandVal);
+
+    const xLeftBottom =
+      centerStartPoint.x + h * Math.cos(degToRad(-rotateVal + 135));
+    const yLeftBottom =
+      centerStartPoint.y + h * Math.sin(degToRad(-rotateVal + 135));
+
+    const indexLeftBottom =
+      Math.round(xLeftBottom) + Math.round(yLeftBottom) * width;
+    equivPixelArr[indexLeftBottom] = parseInt(sandVal);
+
+    const xLeftTop =
+      centerStartPoint.x + h * Math.cos(degToRad(-rotateVal + 225));
+    const yLeftTop =
+      centerStartPoint.y + h * Math.sin(degToRad(-rotateVal + 225));
+
+    const indexLeftTop = Math.round(xLeftTop) + Math.round(yLeftTop) * width;
+    equivPixelArr[indexLeftTop] = parseInt(sandVal);
+
+    console.log("Populating");
+    draw();
+  }
 }
 
 /** ===================== LISTENERS ===================== */
@@ -82,6 +173,7 @@ reset.addEventListener("click", () => {
   // ctx.fillStyle = "#000";
   // ctx.fillRect(0, 0, width, height);
   ctx.clearRect(0, 0, width, height);
+  ctx.drawImage(bkgrdImg, 0, 0);
 });
 
 canvas.addEventListener("click", (e) => {
@@ -144,6 +236,8 @@ let centerLineRight = new Vector(centerStartPoint.x, centerStartPoint.y, width);
 let centerStrokeStyle = "rgba(255,255,255,1)";
 let centerPointStrokeStyle = "rgba(190,0,0)";
 
+// Draw center line
+
 function drawCenterLine() {
   ctxUi.beginPath();
   ctxUi.moveTo(centerStartPoint.x, centerStartPoint.y);
@@ -172,6 +266,43 @@ function drawCenterPoint() {
   ctxUi.ellipse(
     width / 2,
     height / 2,
+    circleWidths,
+    circleWidths,
+    0,
+    0,
+    Math.PI * 2
+  );
+  ctxUi.strokeStyle = centerPointStrokeStyle;
+  ctxUi.lineWidth = 2;
+  ctxUi.stroke();
+  ctxUi.closePath();
+}
+
+// Draw right and left points
+
+let twoChkbx = document.querySelector("#two");
+
+function drawRightPoint() {
+  ctxUi.beginPath();
+  ctxUi.ellipse(
+    centerStartPoint.x + spreadVal * Math.cos(degToRad(-rotateVal)),
+    centerStartPoint.y + spreadVal * Math.sin(degToRad(-rotateVal)),
+    circleWidths,
+    circleWidths,
+    0,
+    0,
+    Math.PI * 2
+  );
+  ctxUi.strokeStyle = centerPointStrokeStyle;
+  ctxUi.lineWidth = 2;
+  ctxUi.stroke();
+  ctxUi.closePath();
+}
+function drawLeftPoint() {
+  ctxUi.beginPath();
+  ctxUi.ellipse(
+    centerStartPoint.x - spreadVal * Math.cos(degToRad(-rotateVal)),
+    centerStartPoint.y - spreadVal * Math.sin(degToRad(-rotateVal)),
     circleWidths,
     circleWidths,
     0,
@@ -233,43 +364,6 @@ function drawBottomPoint() {
   ctxUi.ellipse(
     centerStartPoint.x - spreadVal * Math.cos(degToRad(-rotateVal - 90)),
     centerStartPoint.y - spreadVal * Math.sin(degToRad(-rotateVal - 90)),
-    circleWidths,
-    circleWidths,
-    0,
-    0,
-    Math.PI * 2
-  );
-  ctxUi.strokeStyle = centerPointStrokeStyle;
-  ctxUi.lineWidth = 2;
-  ctxUi.stroke();
-  ctxUi.closePath();
-}
-
-// Draw right and left points
-
-let twoChkbx = document.querySelector("#two");
-
-function drawRightPoint() {
-  ctxUi.beginPath();
-  ctxUi.ellipse(
-    centerStartPoint.x + spreadVal * Math.cos(degToRad(-rotateVal)),
-    centerStartPoint.y + spreadVal * Math.sin(degToRad(-rotateVal)),
-    circleWidths,
-    circleWidths,
-    0,
-    0,
-    Math.PI * 2
-  );
-  ctxUi.strokeStyle = centerPointStrokeStyle;
-  ctxUi.lineWidth = 2;
-  ctxUi.stroke();
-  ctxUi.closePath();
-}
-function drawLeftPoint() {
-  ctxUi.beginPath();
-  ctxUi.ellipse(
-    centerStartPoint.x - spreadVal * Math.cos(degToRad(-rotateVal)),
-    centerStartPoint.y - spreadVal * Math.sin(degToRad(-rotateVal)),
     circleWidths,
     circleWidths,
     0,
