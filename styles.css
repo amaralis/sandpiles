@@ -12,6 +12,10 @@ main {
   display: flex;
 }
 
+#ui-canvas {
+  z-index: 1;
+}
+
 .controls-div {
   display: flex;
   flex: 1;

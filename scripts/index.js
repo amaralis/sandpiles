@@ -1,8 +1,21 @@
 const canvas = document.getElementById("sandpile-canvas");
+const UiCanvas = document.getElementById("ui-canvas");
+UiCanvas.style.position = "absolute";
 const width = canvas.width;
 const height = canvas.height;
 const ctx = canvas.getContext("2d");
+const ctxUi = UiCanvas.getContext("2d");
+UiCanvas.style.left = canvas.getBoundingClientRect().left + "px";
+UiCanvas.style.top = canvas.getBoundingClientRect().top + "px";
+ctx.fillStyle = "#000";
 ctx.fillRect(0, 0, width, height);
+
+function drawUi() {
+  ctxUi.clearRect(0, 0, width, height);
+  requestAnimationFrame(drawUi);
+}
+drawUi();
+console.log(canvas.getBoundingClientRect().left);
 
 const timestepInput = document.querySelector("#timestep-slider");
 let pause = true;
@@ -25,18 +38,19 @@ pauseBtn.addEventListener("click", () => {
   if (!pause) {
     pause = true;
     pauseBtn.previousSibling.textContent = "Paused";
+    UiCanvas.style.zIndex = 1;
+    canvas.style.zIndex = -1;
     showGuidelines.checked && drawGuidelines();
 
     console.log("Pause was false and now is true");
   } else {
     pause = false;
+    canvas.style.zIndex = 1;
+    UiCanvas.style.zIndex = -1;
     console.log("Pause was true and now is false");
     pauseBtn.previousSibling.textContent = "Simulating";
     ctx.fillStyle = "#000";
-    ctx.fillRect(0, 0, width, height);
-    ctx.clearRect(0, 0, width, height);
     draw();
-    //populate();
   }
 });
 
@@ -61,21 +75,24 @@ reset.addEventListener("click", () => {
     equivPixelArr[i] = 0;
     nextPixelArr[i] = 0;
   }
-  ctx.fillStyle = "#000";
-  ctx.fillRect(0, 0, width, height);
+  // ctx.fillStyle = "#000";
+  // ctx.fillRect(0, 0, width, height);
+  ctx.clearRect(0, 0, width, height);
 });
 
 canvas.addEventListener("click", (e) => {
   mouseX = e.clientX - canvas.offsetLeft;
   mouseY = e.clientY - canvas.offsetTop;
+  console.log("Canvas clicked");
 });
 
 const freeChkbx = document.querySelector("#free");
 canvas.addEventListener("click", (e) => {
   if (freeChkbx.checked) {
     seedPixelIndex = mouseX + mouseY * width;
-    ctx.fillStyle = "#000";
-    ctx.fillRect(0, 0, width, height);
+    // ctx.fillStyle = "#000";
+    // ctx.fillRect(0, 0, width, height);
+    ctx.clearRect(0, 0, width, height);
     populate();
   }
 });
@@ -124,31 +141,31 @@ let centerStrokeStyle = "rgba(255,255,255,1)";
 let centerPointStrokeStyle = "rgba(190,0,0)";
 
 function drawCenterLine() {
-  ctx.beginPath();
-  ctx.moveTo(centerStartPoint.x, centerStartPoint.y);
-  ctx.lineTo(
+  ctxUi.beginPath();
+  ctxUi.moveTo(centerStartPoint.x, centerStartPoint.y);
+  ctxUi.lineTo(
     centerStartPoint.x + centerLineRight.mag * Math.cos(degToRad(-rotateVal)),
     centerStartPoint.y + centerLineRight.mag * Math.sin(degToRad(-rotateVal))
   );
-  ctx.strokeStyle = centerStrokeStyle;
-  ctx.lineWidth = 0.2;
-  ctx.stroke();
-  ctx.closePath();
+  ctxUi.strokeStyle = centerStrokeStyle;
+  ctxUi.lineWidth = 0.2;
+  ctxUi.stroke();
+  ctxUi.closePath();
 
-  ctx.beginPath();
-  ctx.moveTo(centerStartPoint.x, centerStartPoint.y);
-  ctx.lineTo(
+  ctxUi.beginPath();
+  ctxUi.moveTo(centerStartPoint.x, centerStartPoint.y);
+  ctxUi.lineTo(
     centerStartPoint.x - centerLineRight.mag * Math.cos(degToRad(-rotateVal)),
     centerStartPoint.y - centerLineRight.mag * Math.sin(degToRad(-rotateVal))
   );
-  ctx.strokeStyle = centerStrokeStyle;
-  ctx.stroke();
-  ctx.closePath();
+  ctxUi.strokeStyle = centerStrokeStyle;
+  ctxUi.stroke();
+  ctxUi.closePath();
 }
 
 function drawCenterPoint() {
-  ctx.beginPath();
-  ctx.ellipse(
+  ctxUi.beginPath();
+  ctxUi.ellipse(
     width / 2,
     height / 2,
     circleWidths,
@@ -157,43 +174,43 @@ function drawCenterPoint() {
     0,
     Math.PI * 2
   );
-  ctx.strokeStyle = centerPointStrokeStyle;
-  ctx.lineWidth = 2;
-  ctx.stroke();
-  ctx.closePath();
+  ctxUi.strokeStyle = centerPointStrokeStyle;
+  ctxUi.lineWidth = 2;
+  ctxUi.stroke();
+  ctxUi.closePath();
 }
 
 // Draw vertical cross line
 
 function drawCrossLine() {
-  ctx.beginPath();
-  ctx.moveTo(centerStartPoint.x, centerStartPoint.y);
-  ctx.lineTo(
+  ctxUi.beginPath();
+  ctxUi.moveTo(centerStartPoint.x, centerStartPoint.y);
+  ctxUi.lineTo(
     centerStartPoint.x + width * Math.cos(degToRad(-rotateVal - 90)),
     centerStartPoint.y + width * Math.sin(degToRad(-rotateVal - 90))
   );
-  ctx.strokeStyle = centerStrokeStyle;
-  ctx.lineWidth = 0.2;
-  ctx.stroke();
-  ctx.closePath();
+  ctxUi.strokeStyle = centerStrokeStyle;
+  ctxUi.lineWidth = 0.2;
+  ctxUi.stroke();
+  ctxUi.closePath();
 
-  ctx.beginPath();
-  ctx.moveTo(centerStartPoint.x, centerStartPoint.y);
-  ctx.lineTo(
+  ctxUi.beginPath();
+  ctxUi.moveTo(centerStartPoint.x, centerStartPoint.y);
+  ctxUi.lineTo(
     centerStartPoint.x - width * Math.cos(degToRad(-rotateVal - 90)),
     centerStartPoint.y - width * Math.sin(degToRad(-rotateVal - 90))
   );
-  ctx.strokeStyle = centerStrokeStyle;
-  ctx.stroke();
-  ctx.closePath();
+  ctxUi.strokeStyle = centerStrokeStyle;
+  ctxUi.stroke();
+  ctxUi.closePath();
 }
 
 // Draw vertical points
 const twoVertChkbx = document.querySelector("#two-vertical");
 
 function drawTopPoint() {
-  ctx.beginPath();
-  ctx.ellipse(
+  ctxUi.beginPath();
+  ctxUi.ellipse(
     centerStartPoint.x + spreadVal * Math.cos(degToRad(-rotateVal - 90)),
     centerStartPoint.y + spreadVal * Math.sin(degToRad(-rotateVal - 90)),
     circleWidths,
@@ -202,14 +219,14 @@ function drawTopPoint() {
     0,
     Math.PI * 2
   );
-  ctx.strokeStyle = centerPointStrokeStyle;
-  ctx.lineWidth = 2;
-  ctx.stroke();
-  ctx.closePath();
+  ctxUi.strokeStyle = centerPointStrokeStyle;
+  ctxUi.lineWidth = 2;
+  ctxUi.stroke();
+  ctxUi.closePath();
 }
 function drawBottomPoint() {
-  ctx.beginPath();
-  ctx.ellipse(
+  ctxUi.beginPath();
+  ctxUi.ellipse(
     centerStartPoint.x - spreadVal * Math.cos(degToRad(-rotateVal - 90)),
     centerStartPoint.y - spreadVal * Math.sin(degToRad(-rotateVal - 90)),
     circleWidths,
@@ -218,10 +235,10 @@ function drawBottomPoint() {
     0,
     Math.PI * 2
   );
-  ctx.strokeStyle = centerPointStrokeStyle;
-  ctx.lineWidth = 2;
-  ctx.stroke();
-  ctx.closePath();
+  ctxUi.strokeStyle = centerPointStrokeStyle;
+  ctxUi.lineWidth = 2;
+  ctxUi.stroke();
+  ctxUi.closePath();
 }
 
 // Draw right and left points
@@ -229,8 +246,8 @@ function drawBottomPoint() {
 let twoChkbx = document.querySelector("#two");
 
 function drawRightPoint() {
-  ctx.beginPath();
-  ctx.ellipse(
+  ctxUi.beginPath();
+  ctxUi.ellipse(
     centerStartPoint.x + spreadVal * Math.cos(degToRad(-rotateVal)),
     centerStartPoint.y + spreadVal * Math.sin(degToRad(-rotateVal)),
     circleWidths,
@@ -239,14 +256,14 @@ function drawRightPoint() {
     0,
     Math.PI * 2
   );
-  ctx.strokeStyle = centerPointStrokeStyle;
-  ctx.lineWidth = 2;
-  ctx.stroke();
-  ctx.closePath();
+  ctxUi.strokeStyle = centerPointStrokeStyle;
+  ctxUi.lineWidth = 2;
+  ctxUi.stroke();
+  ctxUi.closePath();
 }
 function drawLeftPoint() {
-  ctx.beginPath();
-  ctx.ellipse(
+  ctxUi.beginPath();
+  ctxUi.ellipse(
     centerStartPoint.x - spreadVal * Math.cos(degToRad(-rotateVal)),
     centerStartPoint.y - spreadVal * Math.sin(degToRad(-rotateVal)),
     circleWidths,
@@ -255,10 +272,10 @@ function drawLeftPoint() {
     0,
     Math.PI * 2
   );
-  ctx.strokeStyle = centerPointStrokeStyle;
-  ctx.lineWidth = 2;
-  ctx.stroke();
-  ctx.closePath();
+  ctxUi.strokeStyle = centerPointStrokeStyle;
+  ctxUi.lineWidth = 2;
+  ctxUi.stroke();
+  ctxUi.closePath();
 }
 
 // Draw four points and lines
@@ -284,56 +301,56 @@ const upperLeft = new Vector(
 );
 
 function drawDiagLine1() {
-  ctx.beginPath();
-  ctx.moveTo(centerStartPoint.x, centerStartPoint.y);
-  ctx.lineTo(
+  ctxUi.beginPath();
+  ctxUi.moveTo(centerStartPoint.x, centerStartPoint.y);
+  ctxUi.lineTo(
     centerStartPoint.x +
       centerLineRight.mag * Math.cos(degToRad(-rotateVal - 45)),
     centerStartPoint.y +
       centerLineRight.mag * Math.sin(degToRad(-rotateVal - 45))
   );
-  ctx.strokeStyle = centerStrokeStyle;
-  ctx.lineWidth = 0.2;
-  ctx.stroke();
-  ctx.closePath();
+  ctxUi.strokeStyle = centerStrokeStyle;
+  ctxUi.lineWidth = 0.2;
+  ctxUi.stroke();
+  ctxUi.closePath();
 }
 function drawDiagLine2() {
-  ctx.beginPath();
-  ctx.moveTo(centerStartPoint.x, centerStartPoint.y);
-  ctx.lineTo(
+  ctxUi.beginPath();
+  ctxUi.moveTo(centerStartPoint.x, centerStartPoint.y);
+  ctxUi.lineTo(
     centerStartPoint.x + width * Math.cos(degToRad(-rotateVal - 135)),
     centerStartPoint.y + width * Math.sin(degToRad(-rotateVal - 135))
   );
-  ctx.strokeStyle = centerStrokeStyle;
-  ctx.lineWidth = 0.2;
-  ctx.stroke();
-  ctx.closePath();
+  ctxUi.strokeStyle = centerStrokeStyle;
+  ctxUi.lineWidth = 0.2;
+  ctxUi.stroke();
+  ctxUi.closePath();
 }
 function drawDiagLine3() {
-  ctx.beginPath();
-  ctx.moveTo(centerStartPoint.x, centerStartPoint.y);
-  ctx.lineTo(
+  ctxUi.beginPath();
+  ctxUi.moveTo(centerStartPoint.x, centerStartPoint.y);
+  ctxUi.lineTo(
     centerStartPoint.x + width * Math.cos(degToRad(-rotateVal - 225)),
     centerStartPoint.y + width * Math.sin(degToRad(-rotateVal - 225))
   );
-  ctx.strokeStyle = centerStrokeStyle;
-  ctx.lineWidth = 0.2;
-  ctx.stroke();
-  ctx.closePath();
+  ctxUi.strokeStyle = centerStrokeStyle;
+  ctxUi.lineWidth = 0.2;
+  ctxUi.stroke();
+  ctxUi.closePath();
 }
 function drawDiagLine4() {
-  ctx.beginPath();
-  ctx.moveTo(centerStartPoint.x, centerStartPoint.y);
-  ctx.lineTo(
+  ctxUi.beginPath();
+  ctxUi.moveTo(centerStartPoint.x, centerStartPoint.y);
+  ctxUi.lineTo(
     centerStartPoint.x +
       centerLineRight.mag * Math.cos(degToRad(-rotateVal - 315)),
     centerStartPoint.y +
       centerLineRight.mag * Math.sin(degToRad(-rotateVal - 315))
   );
-  ctx.strokeStyle = centerStrokeStyle;
-  ctx.lineWidth = 0.2;
-  ctx.stroke();
-  ctx.closePath();
+  ctxUi.strokeStyle = centerStrokeStyle;
+  ctxUi.lineWidth = 0.2;
+  ctxUi.stroke();
+  ctxUi.closePath();
 }
 
 // Draw four points
@@ -341,8 +358,8 @@ const fourChkbx = document.querySelector("#four");
 
 function drawRightUpper() {
   let h = Math.sqrt(Math.pow(spreadVal, 2) + Math.pow(spreadVal, 2));
-  ctx.beginPath();
-  ctx.ellipse(
+  ctxUi.beginPath();
+  ctxUi.ellipse(
     centerStartPoint.x + h * Math.cos(degToRad(-rotateVal - 45)),
     centerStartPoint.y + h * Math.sin(degToRad(-rotateVal - 45)),
     circleWidths,
@@ -351,16 +368,16 @@ function drawRightUpper() {
     0,
     Math.PI * 2
   );
-  ctx.strokeStyle = centerPointStrokeStyle;
-  ctx.lineWidth = 2;
-  ctx.stroke();
-  ctx.closePath();
+  ctxUi.strokeStyle = centerPointStrokeStyle;
+  ctxUi.lineWidth = 2;
+  ctxUi.stroke();
+  ctxUi.closePath();
 }
 
 function drawRightBottom() {
   let h = Math.sqrt(Math.pow(spreadVal, 2) + Math.pow(spreadVal, 2));
-  ctx.beginPath();
-  ctx.ellipse(
+  ctxUi.beginPath();
+  ctxUi.ellipse(
     centerStartPoint.x + h * Math.cos(degToRad(-rotateVal + 45)),
     centerStartPoint.y + h * Math.sin(degToRad(-rotateVal + 45)),
     circleWidths,
@@ -369,15 +386,15 @@ function drawRightBottom() {
     0,
     Math.PI * 2
   );
-  ctx.strokeStyle = centerPointStrokeStyle;
-  ctx.lineWidth = 2;
-  ctx.stroke();
-  ctx.closePath();
+  ctxUi.strokeStyle = centerPointStrokeStyle;
+  ctxUi.lineWidth = 2;
+  ctxUi.stroke();
+  ctxUi.closePath();
 }
 function drawLeftBottom() {
   let h = Math.sqrt(Math.pow(spreadVal, 2) + Math.pow(spreadVal, 2));
-  ctx.beginPath();
-  ctx.ellipse(
+  ctxUi.beginPath();
+  ctxUi.ellipse(
     centerStartPoint.x + h * Math.cos(degToRad(-rotateVal + 135)),
     centerStartPoint.y + h * Math.sin(degToRad(-rotateVal + 135)),
     circleWidths,
@@ -386,15 +403,15 @@ function drawLeftBottom() {
     0,
     Math.PI * 2
   );
-  ctx.strokeStyle = centerPointStrokeStyle;
-  ctx.lineWidth = 2;
-  ctx.stroke();
-  ctx.closePath();
+  ctxUi.strokeStyle = centerPointStrokeStyle;
+  ctxUi.lineWidth = 2;
+  ctxUi.stroke();
+  ctxUi.closePath();
 }
 function drawLeftUpper() {
   let h = Math.sqrt(Math.pow(spreadVal, 2) + Math.pow(spreadVal, 2));
-  ctx.beginPath();
-  ctx.ellipse(
+  ctxUi.beginPath();
+  ctxUi.ellipse(
     centerStartPoint.x + h * Math.cos(degToRad(-rotateVal + 225)),
     centerStartPoint.y + h * Math.sin(degToRad(-rotateVal + 225)),
     circleWidths,
@@ -403,10 +420,10 @@ function drawLeftUpper() {
     0,
     Math.PI * 2
   );
-  ctx.strokeStyle = centerPointStrokeStyle;
-  ctx.lineWidth = 2;
-  ctx.stroke();
-  ctx.closePath();
+  ctxUi.strokeStyle = centerPointStrokeStyle;
+  ctxUi.lineWidth = 2;
+  ctxUi.stroke();
+  ctxUi.closePath();
 }
 
 /** ===================== COLORS ===================== */
@@ -570,7 +587,7 @@ function pauseUnpause() {
 const showGuidelines = document.querySelector("#show-guidelines");
 
 const drawGuidelines = () => {
-  ctx.fillRect(0, 0, width, height);
+  ctxUi.clearRect(0, 0, width, height);
   if (centerChkbx.checked) {
     drawCenterPoint();
   }
@@ -612,23 +629,24 @@ drawGuidelines();
 
 function draw() {
   console.log("Rendering main");
-  ctx.fillStyle = "#000";
-  ctx.fillRect(0, 0, width, height);
+  // ctx.fillStyle = "#000";
+  // ctx.fillRect(0, 0, width, height);
+  // ctx.clearRect(0, 0, width, height);
   pauseUnpause();
 }
 showGuidelines.addEventListener("click", () => {
   console.log("Show guidelines clicked. It is " + showGuidelines.checked);
   console.log("Show guidelines clicked. Pause is " + pause);
   if (showGuidelines.checked && pause) {
+    UiCanvas.style.zIndex = 1;
+    canvas.style.zIndex = -1;
     drawGuidelines();
   }
   if (!showGuidelines.checked && !pause) {
+    UiCanvas.style.zIndex = -1;
+    canvas.style.zIndex = 1;
     ctx.fillStyle = "#000";
     ctx.fillRect(0, 0, width, height);
     draw();
-  }
-  if (!showGuidelines.checked && pause) {
-    ctx.fillStyle = "#000";
-    ctx.fillRect(0, 0, width, height);
   }
 });
