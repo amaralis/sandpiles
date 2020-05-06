@@ -12,7 +12,7 @@ main {
   display: flex;
 }
 
-.slider-div {
+.controls-div {
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -22,13 +22,19 @@ main {
   font-weight: bold;
 }
 
-.slider-div input {
+.controls-div input {
   margin: 1rem;
   font-size: 1.5rem;
 }
 
-.slider-div input[type="number"] {
+.controls-div input[type="number"] {
   width: 90px;
+}
+
+.options-div {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
 }
 
 #sandpile {

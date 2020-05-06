@@ -8,10 +8,7 @@
   </head>
   <body>
     <main>
-      <div id="canvas-div">
-        <canvas id="sandpile-canvas" width="800" height="800"></canvas>
-      </div>
-      <aside class="slider-div">
+      <aside class="controls-div">
         <label>
           Sand amount<br />
           <input
@@ -46,17 +43,72 @@
         /></label>
 
         <label
-          >Pause/Unpause simulation<br /><input
-            type="button"
-            id="pause-button"
-            value="||>"
+          ><span>Pause/Unpause simulation</span
+          ><input type="button" id="pause-button" value="||>"
         /></label>
         <label
-          >Reset (pauses simulation)<input
-            type="button"
-            id="reset"
-            value="Reset canvas"
+          >Reset Simulation<input type="button" id="reset" value="Reset canvas"
         /></label>
+      </aside>
+
+      <div id="canvas-div">
+        <canvas id="sandpile-canvas" width="800" height="800"></canvas>
+      </div>
+
+      <aside class="options-div">
+        <div id="place-center">
+          Click this button to place a sand pile in the center. After you've
+          chosen the location, you can rotate your placement site with the
+          "Rotate" button below.
+          <input type="checkbox" id="center" checked />
+        </div>
+        <div id="place-two">
+          Click this button to place twosand piles side by side. After you've
+          chosen their location, you can rotate your placement site with the
+          "Rotate" button below.
+          <input type="checkbox" id="two" checked />
+        </div>
+        <div id="place-two-vertical">
+          Click this button to place two more sand piles, top and bottom. After
+          you've chosen their location, you can rotate your placement site with
+          the "Rotate" button below.
+          <input type="checkbox" id="two-vertical" checked />
+        </div>
+        <div id="place-four">
+          Click this button to place four sand piles. You can let them fall onto
+          the indicated spot, or click anywhere on the black screen to choose
+          how far apart they start. After you've chosen the location, you can
+          rotate your placement site with the "Rotate" button below.
+          <input type="checkbox" id="four" checked />
+        </div>
+        <div id="spread">
+          Use this slider to adjust how far apart your sand piles will drop.
+          <input
+            type="range"
+            id="spread-slider"
+            value="40"
+            min="0"
+            max="400"
+            step="1"
+          />
+        </div>
+        <div id="rotate">
+          Use this slider to rotate your desired locations around the center of
+          the screen.
+          <input
+            type="range"
+            id="rotate-slider"
+            value="0"
+            min="0"
+            max="90"
+            step="5"
+          />
+        </div>
+        <div id="place-free">
+          Click this button to freely choose where your sand piles will be
+          dropped.
+          <button id="free">Free placement</button>
+        </div>
       </aside>
     </main>
     <script src="./scripts/index.js" type="module"></script>

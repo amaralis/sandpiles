@@ -4,19 +4,36 @@ const height = canvas.height;
 const ctx = canvas.getContext("2d");
 ctx.fillRect(0, 0, width, height);
 
-const timestepSlider = document.querySelector("#timestep-slider");
-let sliderVal = timestepSlider.value;
+const timestepInput = document.querySelector("#timestep-slider");
 let pause = false;
 
 const pauseBtn = document.querySelector("#pause-button");
 
+let mouseXtest;
+let mouseYtest;
+
+/** ===================== LISTENERS ===================== */
+
+canvas.addEventListener("mousemove", (e) => {
+  mouseXtest = e.clientX - canvas.offsetLeft;
+  mouseYtest = e.clientY - canvas.offsetTop;
+});
+
 pauseBtn.addEventListener("click", () => {
   if (pause === false) {
     pause = true;
+    pauseBtn.previousSibling.textContent = "Play";
   } else {
     pause = false;
+    pauseBtn.previousSibling.textContent = "Paused";
     draw();
   }
+});
+
+const spreadSlider = document.querySelector("#spread-slider");
+let spreadVal = spreadSlider.value;
+spreadSlider.addEventListener("mousemove", () => {
+  spreadVal = spreadSlider.value;
 });
 
 const sandInput = document.querySelector("#sandpile");
@@ -30,7 +47,6 @@ sandBtn.addEventListener("click", () => {
 
 const reset = document.querySelector("#reset");
 reset.addEventListener("click", () => {
-  pause = true;
   for (let i = 0; i < equivPixelArr.length; i++) {
     equivPixelArr[i] = 0;
     nextPixelArr[i] = 0;
@@ -40,8 +56,8 @@ reset.addEventListener("click", () => {
 });
 
 canvas.addEventListener("click", (e) => {
-  mouseX = e.clientX;
-  mouseY = e.clientY;
+  mouseX = e.clientX - canvas.offsetLeft;
+  mouseY = e.clientY - canvas.offsetTop;
 });
 
 canvas.addEventListener("click", (e) => {
@@ -49,6 +65,382 @@ canvas.addEventListener("click", (e) => {
   populate();
   draw();
 });
+
+/** ===================== OPTIONS ===================== */
+
+class Vector {
+  constructor(x, y, mag) {
+    this.x = x;
+    this.y = y;
+    this.mag = mag;
+  }
+  static getMag = function (x, y) {
+    Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+  };
+}
+
+// Rotation maths stuff
+
+const degToRad = function (deg) {
+  return (deg * Math.PI) / 180;
+};
+
+const getHyp = function (x, y) {
+  triHyp = Math.sqrt(Math.pow(triX, 2) + Math.pow(triY, 2));
+  return triHyp;
+};
+
+// Rotate controls
+const rotateSlider = document.querySelector("#rotate-slider");
+let rotateVal = rotateSlider.value;
+rotateSlider.addEventListener("mousemove", () => {
+  rotateVal = rotateSlider.value;
+});
+
+// Drop sand in center
+const centerChkbx = document.querySelector("#center");
+
+let circleAngles = 0;
+let circleWidths = Math.cos(circleAngles);
+
+const centerStartPoint = new Vector(width / 2, height / 2, undefined);
+let centerLineRight = new Vector(centerStartPoint.x, centerStartPoint.y, width);
+let centerLineLeft = new Vector(centerStartPoint.x, centerStartPoint.y, width);
+let centerPointRight = new Vector(
+  centerStartPoint.x,
+  centerStartPoint.y,
+  mouseXtest - centerStartPoint.x
+);
+
+let centerStrokeStyle = "rgba(255,255,255,1)";
+let centerPointStrokeStyle = "rgba(190,0,0)";
+
+function drawCenterLine() {
+  ctx.beginPath();
+  ctx.moveTo(centerStartPoint.x, centerStartPoint.y);
+  ctx.lineTo(
+    centerStartPoint.x + centerLineRight.mag * Math.cos(degToRad(-rotateVal)),
+    centerStartPoint.y + centerLineRight.mag * Math.sin(degToRad(-rotateVal))
+  );
+  ctx.strokeStyle = centerStrokeStyle;
+  ctx.lineWidth = 0.2;
+  ctx.stroke();
+  ctx.closePath();
+
+  ctx.beginPath();
+  ctx.moveTo(centerStartPoint.x, centerStartPoint.y);
+  ctx.lineTo(
+    centerStartPoint.x - centerLineRight.mag * Math.cos(degToRad(-rotateVal)),
+    centerStartPoint.y - centerLineRight.mag * Math.sin(degToRad(-rotateVal))
+  );
+  ctx.strokeStyle = centerStrokeStyle;
+  ctx.stroke();
+  ctx.closePath();
+}
+
+function drawCenterPoint() {
+  ctx.beginPath();
+  ctx.ellipse(
+    width / 2,
+    height / 2,
+    circleWidths,
+    circleWidths,
+    0,
+    0,
+    Math.PI * 2
+  );
+  ctx.strokeStyle = centerPointStrokeStyle;
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.closePath();
+}
+
+// Draw vertical cross line
+
+function drawCrossLine() {
+  ctx.beginPath();
+  ctx.moveTo(centerStartPoint.x, centerStartPoint.y);
+  ctx.lineTo(
+    centerStartPoint.x + width * Math.cos(degToRad(-rotateVal - 90)),
+    centerStartPoint.y + width * Math.sin(degToRad(-rotateVal - 90))
+  );
+  ctx.strokeStyle = centerStrokeStyle;
+  ctx.lineWidth = 0.2;
+  ctx.stroke();
+  ctx.closePath();
+
+  ctx.beginPath();
+  ctx.moveTo(centerStartPoint.x, centerStartPoint.y);
+  ctx.lineTo(
+    centerStartPoint.x - width * Math.cos(degToRad(-rotateVal - 90)),
+    centerStartPoint.y - width * Math.sin(degToRad(-rotateVal - 90))
+  );
+  ctx.strokeStyle = centerStrokeStyle;
+  ctx.stroke();
+  ctx.closePath();
+}
+
+// Draw vertical points
+const twoVertChkbx = document.querySelector("#two-vertical");
+
+function drawTopPoint() {
+  ctx.beginPath();
+  ctx.ellipse(
+    centerStartPoint.x + spreadVal * Math.cos(degToRad(-rotateVal - 90)),
+    centerStartPoint.y + spreadVal * Math.sin(degToRad(-rotateVal - 90)),
+    circleWidths,
+    circleWidths,
+    0,
+    0,
+    Math.PI * 2
+  );
+  ctx.strokeStyle = centerPointStrokeStyle;
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.closePath();
+}
+function drawBottomPoint() {
+  ctx.beginPath();
+  ctx.ellipse(
+    centerStartPoint.x - spreadVal * Math.cos(degToRad(-rotateVal - 90)),
+    centerStartPoint.y - spreadVal * Math.sin(degToRad(-rotateVal - 90)),
+    circleWidths,
+    circleWidths,
+    0,
+    0,
+    Math.PI * 2
+  );
+  ctx.strokeStyle = centerPointStrokeStyle;
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.closePath();
+}
+
+// Draw right and left points
+
+let twoChkbx = document.querySelector("#two");
+
+function drawRightPoint() {
+  ctx.beginPath();
+  ctx.ellipse(
+    centerStartPoint.x + spreadVal * Math.cos(degToRad(-rotateVal)),
+    centerStartPoint.y + spreadVal * Math.sin(degToRad(-rotateVal)),
+    circleWidths,
+    circleWidths,
+    0,
+    0,
+    Math.PI * 2
+  );
+  ctx.strokeStyle = centerPointStrokeStyle;
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.closePath();
+}
+function drawLeftPoint() {
+  ctx.beginPath();
+  ctx.ellipse(
+    centerStartPoint.x - spreadVal * Math.cos(degToRad(-rotateVal)),
+    centerStartPoint.y - spreadVal * Math.sin(degToRad(-rotateVal)),
+    circleWidths,
+    circleWidths,
+    0,
+    0,
+    Math.PI * 2
+  );
+  ctx.strokeStyle = centerPointStrokeStyle;
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.closePath();
+}
+
+// Draw four points and lines
+const upperRight = new Vector(
+  centerStartPoint.x + spreadVal,
+  centerStartPoint.y - spreadVal,
+  spreadVal
+);
+const bottomRight = new Vector(
+  centerStartPoint.x + spreadVal,
+  centerStartPoint.y + spreadVal,
+  spreadVal
+);
+const bottomLeft = new Vector(
+  centerStartPoint.x - spreadVal,
+  centerStartPoint.y + spreadVal,
+  spreadVal
+);
+const upperLeft = new Vector(
+  centerStartPoint.x - spreadVal,
+  centerStartPoint.y - spreadVal,
+  spreadVal
+);
+
+function drawDiagLine1() {
+  ctx.beginPath();
+  ctx.moveTo(centerStartPoint.x, centerStartPoint.y);
+  ctx.lineTo(
+    centerStartPoint.x +
+      centerLineRight.mag * Math.cos(degToRad(-rotateVal - 45)),
+    centerStartPoint.y +
+      centerLineRight.mag * Math.sin(degToRad(-rotateVal - 45))
+  );
+  ctx.strokeStyle = centerStrokeStyle;
+  ctx.lineWidth = 0.2;
+  ctx.stroke();
+  ctx.closePath();
+}
+function drawDiagLine2() {
+  ctx.beginPath();
+  ctx.moveTo(centerStartPoint.x, centerStartPoint.y);
+  ctx.lineTo(
+    centerStartPoint.x + width * Math.cos(degToRad(-rotateVal - 135)),
+    centerStartPoint.y + width * Math.sin(degToRad(-rotateVal - 135))
+  );
+  ctx.strokeStyle = centerStrokeStyle;
+  ctx.lineWidth = 0.2;
+  ctx.stroke();
+  ctx.closePath();
+}
+function drawDiagLine3() {
+  ctx.beginPath();
+  ctx.moveTo(centerStartPoint.x, centerStartPoint.y);
+  ctx.lineTo(
+    centerStartPoint.x + width * Math.cos(degToRad(-rotateVal - 225)),
+    centerStartPoint.y + width * Math.sin(degToRad(-rotateVal - 225))
+  );
+  ctx.strokeStyle = centerStrokeStyle;
+  ctx.lineWidth = 0.2;
+  ctx.stroke();
+  ctx.closePath();
+}
+function drawDiagLine4() {
+  ctx.beginPath();
+  ctx.moveTo(centerStartPoint.x, centerStartPoint.y);
+  ctx.lineTo(
+    centerStartPoint.x +
+      centerLineRight.mag * Math.cos(degToRad(-rotateVal - 315)),
+    centerStartPoint.y +
+      centerLineRight.mag * Math.sin(degToRad(-rotateVal - 315))
+  );
+  ctx.strokeStyle = centerStrokeStyle;
+  ctx.lineWidth = 0.2;
+  ctx.stroke();
+  ctx.closePath();
+}
+
+// Draw four points
+const fourChkbx = document.querySelector("#four");
+
+function drawRightUpper() {
+  let h = Math.sqrt(Math.pow(spreadVal, 2) + Math.pow(spreadVal, 2));
+  ctx.beginPath();
+  ctx.ellipse(
+    centerStartPoint.x + h * Math.cos(degToRad(-rotateVal - 45)),
+    centerStartPoint.y + h * Math.sin(degToRad(-rotateVal - 45)),
+    circleWidths,
+    circleWidths,
+    0,
+    0,
+    Math.PI * 2
+  );
+  ctx.strokeStyle = centerPointStrokeStyle;
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.closePath();
+}
+
+function drawRightBottom() {
+  let h = Math.sqrt(Math.pow(spreadVal, 2) + Math.pow(spreadVal, 2));
+  ctx.beginPath();
+  ctx.ellipse(
+    centerStartPoint.x + h * Math.cos(degToRad(-rotateVal + 45)),
+    centerStartPoint.y + h * Math.sin(degToRad(-rotateVal + 45)),
+    circleWidths,
+    circleWidths,
+    0,
+    0,
+    Math.PI * 2
+  );
+  ctx.strokeStyle = centerPointStrokeStyle;
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.closePath();
+}
+function drawLeftBottom() {
+  let h = Math.sqrt(Math.pow(spreadVal, 2) + Math.pow(spreadVal, 2));
+  ctx.beginPath();
+  ctx.ellipse(
+    centerStartPoint.x + h * Math.cos(degToRad(-rotateVal + 135)),
+    centerStartPoint.y + h * Math.sin(degToRad(-rotateVal + 135)),
+    circleWidths,
+    circleWidths,
+    0,
+    0,
+    Math.PI * 2
+  );
+  ctx.strokeStyle = centerPointStrokeStyle;
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.closePath();
+}
+function drawLeftUpper() {
+  let h = Math.sqrt(Math.pow(spreadVal, 2) + Math.pow(spreadVal, 2));
+  ctx.beginPath();
+  ctx.ellipse(
+    centerStartPoint.x + h * Math.cos(degToRad(-rotateVal + 225)),
+    centerStartPoint.y + h * Math.sin(degToRad(-rotateVal + 225)),
+    circleWidths,
+    circleWidths,
+    0,
+    0,
+    Math.PI * 2
+  );
+  ctx.strokeStyle = centerPointStrokeStyle;
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.closePath();
+}
+
+const drawGuidelines = () => {
+  ctx.clearRect(0, 0, width, height);
+  ctx.fillRect(0, 0, width, height);
+
+  if (centerChkbx.checked) {
+    drawCenterPoint();
+  }
+
+  if (twoChkbx.checked) {
+    drawRightPoint();
+    drawLeftPoint();
+  }
+
+  if (fourChkbx.checked) {
+    drawRightUpper();
+    drawRightBottom();
+    drawLeftBottom();
+    drawLeftUpper();
+  }
+
+  if (twoVertChkbx.checked) {
+    drawTopPoint();
+    drawBottomPoint();
+  }
+
+  drawCenterLine();
+  drawCrossLine();
+  drawDiagLine1();
+  drawDiagLine2();
+  drawDiagLine3();
+  drawDiagLine4();
+
+  circleAngles += 0.2;
+  circleWidths = Math.sin(circleAngles) + 10;
+
+  requestAnimationFrame(drawGuidelines);
+};
+drawGuidelines();
+
+/** ===================== COLORS ===================== */
 
 function drawRectFull(index) {
   ctx.fillStyle = "#92EDE3";
@@ -204,7 +596,7 @@ function paintEverything() {
 
 function pauseUnpause() {
   if (pause === false) {
-    for (let i = 0; i < timestepSlider.value; i++) {
+    for (let i = 0; i < timestepInput.value; i++) {
       update();
     }
     paintEverything();
