@@ -19,7 +19,7 @@
             max="100000"
             step="1"
             size="15px"
-          /><input type="button" id="add-sand" value="Add sand to pile" />
+          /><input type="button" id="add-sand" value="Pick up sand" />
         </label>
         <label
           >Timestep<br /><input
@@ -43,7 +43,7 @@
         /></label>
 
         <label
-          ><span>Pause/Unpause simulation</span
+          ><span>Start simulation</span
           ><input type="button" id="pause-button" value="||>"
         /></label>
         <label
@@ -107,7 +107,10 @@
         <div id="place-free">
           Click this button to freely choose where your sand piles will be
           dropped.
-          <button id="free">Free placement</button>
+          <input type="checkbox" id="free" checked />
+        </div>
+        <div id="show-guidelines-div">
+          <input type="checkbox" id="show-guidelines" />
         </div>
       </aside>
     </main>

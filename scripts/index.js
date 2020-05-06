@@ -5,28 +5,39 @@ const ctx = canvas.getContext("2d");
 ctx.fillRect(0, 0, width, height);
 
 const timestepInput = document.querySelector("#timestep-slider");
-let pause = false;
+let pause = true;
 
 const pauseBtn = document.querySelector("#pause-button");
 
-let mouseXtest;
-let mouseYtest;
+let renderGuidelines = true;
+
+function populate() {
+  equivPixelArr[seedPixelIndex] = parseInt(sandVal);
+  console.log(equivPixelArr[seedPixelIndex], parseInt(sandVal));
+  console.log(equivPixelArr[seedPixelIndex]);
+  console.log("Populating");
+  ctx.fillStyle = "#000";
+  ctx.fillRect(0, 0, width, height);
+  draw();
+}
 
 /** ===================== LISTENERS ===================== */
-
-canvas.addEventListener("mousemove", (e) => {
-  mouseXtest = e.clientX - canvas.offsetLeft;
-  mouseYtest = e.clientY - canvas.offsetTop;
-});
 
 pauseBtn.addEventListener("click", () => {
   if (pause === false) {
     pause = true;
+    showGuidelines && renderGuidelines == true;
     pauseBtn.previousSibling.textContent = "Play";
+    drawGuidelines();
+    console.log("Pause was false and now is true");
   } else {
     pause = false;
+    renderGuidelines = false;
+    console.log("Pause was true and now is false");
+    ctx.fillStyle = "#000";
+    ctx.fillRect(0, 0, width, height);
     pauseBtn.previousSibling.textContent = "Paused";
-    draw();
+    //populate();
   }
 });
 
@@ -41,7 +52,7 @@ const sandBtn = document.querySelector("#add-sand");
 let sandVal = sandInput.value;
 sandBtn.addEventListener("click", () => {
   sandVal = sandInput.value;
-  sandpile = sandVal;
+  //sandpile = sandVal;
   console.log(sandVal);
 });
 
@@ -60,10 +71,14 @@ canvas.addEventListener("click", (e) => {
   mouseY = e.clientY - canvas.offsetTop;
 });
 
+const freeChkbx = document.querySelector("#free");
 canvas.addEventListener("click", (e) => {
-  seedPixelIndex = mouseX + mouseY * width;
-  populate();
-  draw();
+  if (freeChkbx.checked) {
+    seedPixelIndex = mouseX + mouseY * width;
+    ctx.fillStyle = "#000";
+    ctx.fillRect(0, 0, width, height);
+    populate();
+  }
 });
 
 /** ===================== OPTIONS ===================== */
@@ -105,12 +120,6 @@ let circleWidths = Math.cos(circleAngles);
 
 const centerStartPoint = new Vector(width / 2, height / 2, undefined);
 let centerLineRight = new Vector(centerStartPoint.x, centerStartPoint.y, width);
-let centerLineLeft = new Vector(centerStartPoint.x, centerStartPoint.y, width);
-let centerPointRight = new Vector(
-  centerStartPoint.x,
-  centerStartPoint.y,
-  mouseXtest - centerStartPoint.x
-);
 
 let centerStrokeStyle = "rgba(255,255,255,1)";
 let centerPointStrokeStyle = "rgba(190,0,0)";
@@ -401,45 +410,6 @@ function drawLeftUpper() {
   ctx.closePath();
 }
 
-const drawGuidelines = () => {
-  ctx.clearRect(0, 0, width, height);
-  ctx.fillRect(0, 0, width, height);
-
-  if (centerChkbx.checked) {
-    drawCenterPoint();
-  }
-
-  if (twoChkbx.checked) {
-    drawRightPoint();
-    drawLeftPoint();
-  }
-
-  if (fourChkbx.checked) {
-    drawRightUpper();
-    drawRightBottom();
-    drawLeftBottom();
-    drawLeftUpper();
-  }
-
-  if (twoVertChkbx.checked) {
-    drawTopPoint();
-    drawBottomPoint();
-  }
-
-  drawCenterLine();
-  drawCrossLine();
-  drawDiagLine1();
-  drawDiagLine2();
-  drawDiagLine3();
-  drawDiagLine4();
-
-  circleAngles += 0.2;
-  circleWidths = Math.sin(circleAngles) + 10;
-
-  requestAnimationFrame(drawGuidelines);
-};
-drawGuidelines();
-
 /** ===================== COLORS ===================== */
 
 function drawRectFull(index) {
@@ -537,11 +507,6 @@ function leftEdge(arr, width) {
   }
 }
 
-function populate() {
-  // Find center
-  equivPixelArr[seedPixelIndex] = sandpile;
-}
-
 const pixelData = ctx.getImageData(0, 0, width, height);
 
 let equivPixelArr = new Array(pixelData.data.length / 4);
@@ -562,7 +527,7 @@ let mouseX = 0;
 let mouseY = 0;
 
 let seedPixelIndex = 0;
-let sandpile = sandVal;
+//let sandpile = sandVal;
 
 function update() {
   nextPixelArr = new Array(pixelData.data.length / 4);
@@ -590,7 +555,7 @@ function update() {
 
 function paintEverything() {
   for (let i = 0; i < equivPixelArr.length; i++) {
-    paint(i);
+    equivPixelArr[i] > 0 && paint(i);
   }
 }
 
@@ -604,7 +569,47 @@ function pauseUnpause() {
   }
 }
 
+const showGuidelines = document.querySelector("#show-guidelines");
+const drawGuidelines = () => {
+  console.log("Rendering guidelines");
+  ctx.fillStyle = "#000";
+  ctx.fillRect(0, 0, width, height);
+  if (centerChkbx.checked) {
+    drawCenterPoint();
+  }
+
+  if (twoChkbx.checked) {
+    drawRightPoint();
+    drawLeftPoint();
+  }
+
+  if (fourChkbx.checked) {
+    drawRightUpper();
+    drawRightBottom();
+    drawLeftBottom();
+    drawLeftUpper();
+  }
+
+  if (twoVertChkbx.checked) {
+    drawTopPoint();
+    drawBottomPoint();
+  }
+
+  drawCenterLine();
+  drawCrossLine();
+  drawDiagLine1();
+  drawDiagLine2();
+  drawDiagLine3();
+  drawDiagLine4();
+
+  // I'm paranoid, leave alone, mmkay?
+  circleAngles < 1000 ? (circleAngles += 0.2) : (circleAngles = 0);
+  circleWidths = Math.sin(circleAngles) + 10;
+  showGuidelines.checked && requestAnimationFrame(drawGuidelines);
+};
+drawGuidelines();
+
 function draw() {
+  console.log("Rendering main");
   pauseUnpause();
 }
-draw();
