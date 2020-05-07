@@ -2,7 +2,6 @@
   padding: 0;
   margin: 0;
   box-sizing: border-box;
-  font-family: ;
 }
 
 /* Chrome, Safari, Edge, Opera */
@@ -27,7 +26,6 @@ input[type="checkbox"] {
 
 body {
   background-color: #333;
-  overflow-x: hidden;
   font-family: "Catamaran", sans-serif;
 }
 
@@ -36,8 +34,9 @@ main {
   flex-direction: column;
 }
 
-label {
-  font-size: 1.5rem;
+label,
+p {
+  font-size: 1rem;
   color: white;
 }
 
@@ -49,7 +48,6 @@ input[type="button"] {
   padding: 10px 15px;
   border-radius: 20px;
   text-align: center;
-  cursor: pointer;
   font-weight: bold;
   background-image: linear-gradient(#8e7aaa, #542361);
   border: 1px solid #6639a6;
@@ -68,7 +66,7 @@ input[type="checkbox"]:hover {
 .controls-div {
   display: flex;
   justify-content: space-evenly;
-  font-size: 1.5rem;
+  font-size: 1rem;
   font-weight: bold;
 }
 
@@ -82,7 +80,7 @@ input[type="checkbox"]:hover {
   flex: 1;
   border: 1px solid rgb(0, 200, 200);
   border-radius: 20px;
-  margin: 1vw;
+  margin: 0.5rem;
   padding: 1.6rem;
 }
 
@@ -92,17 +90,17 @@ input[type="checkbox"]:hover {
 
 .controls-div input {
   margin: 1rem;
-  font-size: 1.5rem;
+  font-size: 1rem;
   width: 100%;
 }
 
 #dump {
   margin: 1rem;
-  font-size: 1.5rem;
+  font-size: 1rem;
   padding: 10px 15px;
   border-radius: 20px;
   text-align: center;
-  cursor: pointer;
+  cursor: help;
   font-weight: bold;
   background-image: linear-gradient(#8e7aaa, #542361);
   border: 1px solid #6639a6;
@@ -123,6 +121,7 @@ input[type="checkbox"]:hover {
   color: black;
 } */
 
+.options-div input[type="number"],
 .controls-div input[type="number"] {
   padding: 10px 15px;
   width: 90px;
@@ -153,52 +152,100 @@ input[type="checkbox"]:hover {
 
 /* ================ CANVAS AND OPTIONS DIV ================ */
 
+.options-div {
+}
+
+.top,
+.bottom {
+  margin: 0.5rem;
+  padding: 0.5rem 0rem;
+  border: 1px solid cyan;
+  border-radius: 20px;
+}
+
+.top div {
+  display: flex;
+}
+
+.bottom {
+  display: flex;
+}
+
+.left,
+.right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+  padding: 0 0.5rem;
+  margin: 0 0.5rem;
+  border: 1px solid cyan;
+  border-radius: 20px;
+}
+
 #canvas-wrapper {
+  width: 804px;
+  height: 804px;
   border: 2px solid cyan;
 }
 
 #canvas-and-options {
   display: flex;
-  justify-content: space-around;
-  align-items: center;
+  justify-content: space-evenly;
+  justify-content: space-evenly;
   max-height: 900px;
-  width: 100vw;
 }
 
 /* ================ OPTIONS DIV ================ */
 
 .options-div {
   display: flex;
-  flex-direction: column;
-  flex-grow: 2;
-  justify-content: space-between;
-  align-content: center;
+  flex: 1;
   flex-wrap: wrap;
-  height: 800px;
+  justify-content: space-evenly;
 
   /* min-width messes up UI canvas */
 }
 
 .options-div div {
   display: flex;
+  align-content: center;
   flex-direction: column;
   border: 1px solid rgb(0, 200, 200);
   border-radius: 20px;
-  padding: 1.6rem;
-  cursor: pointer;
+  padding: 1rem;
+  cursor: help;
   background-image: linear-gradient(cyan, rgb(0, 120, 120));
   background-image: -webkit-linear-gradient(cyan, rgb(0, 120, 120));
   background-image: -moz-linear-gradient(cyan, rgb(0, 120, 120));
   text-shadow: 0px 0px 2px black;
+  max-width: 30vw;
 }
-
+/* 
 .options-div div:hover {
   background: cyan;
-}
-.options-div div:hover > label {
-  color: #333;
+} */
+
+#show-guidelines-div:hover,
+#place-free:hover,
+#place-center:hover,
+#place-two:hover,
+#place-two-vertical:hover,
+#place-four:hover {
+  background-image: linear-gradient(
+    rgb(0, 120, 120),
+    rgb(0, 50, 50)
+  ) !important;
+  background-image: -webkit-linear-gradient(
+    rgb(0, 120, 120),
+    rgb(0, 50, 50)
+  ) !important;
+  background-image: -moz-linear-gradient(
+    rgb(0, 120, 120),
+    rgb(0, 50, 50)
+  ) !important;
 }
 
 .options-div label:hover {
-  cursor: pointer;
+  cursor: help;
 }

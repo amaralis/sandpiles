@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- <link
+    <link
       href="https://fonts.googleapis.com/css2?family=Catamaran:wght@400;500;600;700&display=swap"
       rel="stylesheet"
-    /> -->
+    />
 
     <link rel="stylesheet" href="styles.css" />
     <title>Sandpiles</title>
@@ -20,7 +20,7 @@
             <input
               type="number"
               id="sandpile"
-              value="50000"
+              value="1"
               min="1"
               max="100000"
               step="1"
@@ -28,7 +28,144 @@
             />
           </label>
         </div>
+
         <div>
+          <input type="button" id="pause-button" value="Start Simulation" />
+        </div>
+
+        <div>
+          <input
+            type="button"
+            id="dump"
+            value=""
+            title="After you add all the sand you want, click 'Start simulation'"
+            )
+          />
+        </div>
+        <div>
+          <input type="button" id="reset" value="Reset" />
+        </div>
+      </aside>
+
+      <div class="options-div top">
+        <div id="spread">
+          <label for="spread-slider">SPREAD</label>
+          <input
+            type="range"
+            id="spread-slider"
+            value="40"
+            min="0"
+            max="400"
+            step="1"
+          />
+        </div>
+
+        <div id="sand-left">
+          <p>Backed up sand left:</p>
+          <span id="sand-left-counter"></span>
+        </div>
+
+        <div id="rotate">
+          <label for="rotate-slider">ROTATE</label>
+
+          <input
+            type="range"
+            id="rotate-slider"
+            value="0"
+            min="0"
+            max="90"
+            step="5"
+          />
+        </div>
+      </div>
+
+      <div id="canvas-and-options">
+        <aside class="options-div left">
+          <div
+            id="show-guidelines-div"
+            title="Guidelines will only display when your simulation is paused, and only if you want to."
+          >
+            <label
+              >Click here to toggle guidelines (only when paused)
+              <input type="checkbox" id="show-guidelines" checked
+            /></label>
+          </div>
+          <div
+            id="place-free"
+            title="A sandpile of your chosen size will be dropped wherever you click."
+          >
+            <label
+              >Click this button to freely choose where your sandpiles will be
+              dropped
+              <input type="checkbox" class="regular-checkbox" id="free" checked
+            /></label>
+          </div>
+          <div
+            id="place-center"
+            title="Click this button to choose whether to place a sand pile in the center."
+          >
+            <label
+              >Click here to turn off middle drop spot<input
+                type="checkbox"
+                class="regular-checkbox"
+                id="center"
+                checked
+            /></label>
+          </div>
+        </aside>
+
+        <div id="canvas-wrapper">
+          <div id="canvas-div-ui">
+            <canvas id="ui-canvas" width="800" height="800"></canvas>
+          </div>
+          <div id="canvas-div">
+            <canvas id="sandpile-canvas" width="800" height="800"></canvas>
+          </div>
+        </div>
+
+        <aside class="options-div right">
+          <div
+            id="place-two"
+            title="Click this button choose whether to place two sand piles side by side.
+            You can further tune your placement by using the 'ROTATE' and 'Spread' sliders below."
+          >
+            <label
+              >Click here to turn off right and left drop spots&emsp;<input
+                type="checkbox"
+                class="regular-checkbox"
+                id="two"
+                checked
+            /></label>
+          </div>
+
+          <div
+            id="place-two-vertical"
+            title="Click this button choose whether to place two sand piles vertically.
+            You can further tune your placement by using the 'ROTATE' and 'Spread' sliders below."
+          >
+            <label
+              >Click here to turn off top and bottom sand piles&emsp;
+              <input
+                type="checkbox"
+                class="regular-checkbox"
+                id="two-vertical"
+                checked
+            /></label>
+          </div>
+          <div
+            id="place-four"
+            title="Click this button choose whether to place four sand piles diagonally relative to the center.
+            You can further tune your placement by using the 'ROTATE' and 'Spread' sliders below."
+          >
+            <label
+              >Click here to turn off diagonal sand piles&emsp;
+              <input type="checkbox" class="regular-checkbox" id="four" checked
+            /></label>
+          </div>
+        </aside>
+      </div>
+      <div class="options-div bottom">
+        <div id="upf">
           <label
             >Updates per frame<br /><input
               type="range"
@@ -50,125 +187,17 @@
               oninput="document.getElementById('timestep-slider').value=this.value"
           /></label>
         </div>
-        <div>
-          <input type="button" id="pause-button" value="Start Simulation" />
-        </div>
-        <div>
-          <input type="button" id="reset" value="Reset" />
-        </div>
-        <div>
-          <button id="dump">DROP SAND</button>
-        </div>
-      </aside>
-
-      <div id="canvas-and-options">
-        <div id="canvas-wrapper">
-          <div id="canvas-div-ui">
-            <canvas id="ui-canvas" width="800" height="800"></canvas>
-          </div>
-          <div id="canvas-div">
-            <canvas id="sandpile-canvas" width="800" height="800"></canvas>
-          </div>
-        </div>
-
-        <aside class="options-div">
-          <div id="place-center">
-            <label
-              >Click here to turn off middle drop spot&emsp;<input
-                type="checkbox"
-                class="regular-checkbox"
-                id="center"
-                title="Click this button to place a sand pile in the center. After you've
-chosen the location, you can rotate your placement site with the
-'ROTATE' slider below."
-                checked
-            /></label>
-          </div>
-          <div id="place-two">
-            <label
-              >Click here to turn off right and left drop spots&emsp;<input
-                type="checkbox"
-                class="regular-checkbox"
-                id="two"
-                title="Click this button to place twosand piles side by side. After you've
-          chosen their location, you can rotate your placement site with the
-          'ROTATE' slider below."
-                checked
-            /></label>
-          </div>
-
-          <div id="place-two-vertical">
-            <label
-              >Click here to turn off top and bottom sand piles&emsp;
-              <input
-                type="checkbox"
-                class="regular-checkbox"
-                id="two-vertical"
-                title="Click this button to place two more sand piles, top and bottom. After
-you've chosen their location, you can rotate your placement site with
-the 'ROTATE' slider below."
-                checked
-            /></label>
-          </div>
-          <div id="place-four">
-            <label
-              >Click here to turn off diagonal sand piles&emsp;
-              <input
-                type="checkbox"
-                class="regular-checkbox"
-                id="four"
-                title="Click this button to place four sand piles. You can let them fall onto
-the indicated spot, or click anywhere on the black screen to choose
-how far apart they start. After you've chosen the location, you can
-rotate your placement site with the 'ROTATE' button below."
-                checked
-            /></label>
-          </div>
-          <div id="spread">
-            <label for="spread-slider"
-              >Use this slider to adjust how far apart your sand piles will
-              drop&emsp;</label
-            >
-            <input
-              type="range"
-              id="spread-slider"
-              value="40"
-              min="0"
-              max="400"
-              step="1"
-            />
-          </div>
-          <div id="rotate">
-            <label for="rotate-slider"
-              >Use this slider to rotate your desired locations around the
-              center of the screen&emsp;</label
-            >
-
-            <input
-              type="range"
-              id="rotate-slider"
-              value="0"
-              min="0"
-              max="90"
-              step="5"
-            />
-          </div>
-          <div id="place-free">
-            <label
-              >Click this button to freely choose where your sand piles will be
-              dropped&emsp;
-              <input type="checkbox" class="regular-checkbox" id="free" checked
-            /></label>
-          </div>
-          <div id="show-guidelines-div">
-            <label
-              >Click here to toggle guidelines (only when paused)
-              <input type="checkbox" id="show-guidelines" checked
-            /></label>
-          </div>
-        </aside>
       </div>
     </main>
+
+    <script>
+      window.onload = function () {
+        const sandpileVal = document.getElementById("sandpile").value;
+        document.getElementById(
+          "dump"
+        ).value = `Add ${sandpileVal} grains to your selected spots`;
+      };
+    </script>
     <script src="./scripts/index.js" type="module"></script>
   </body>
 </html>
