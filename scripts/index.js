@@ -13,7 +13,36 @@ UiCanvas.style.top = canvas.getBoundingClientRect().top + window.scrollY + "px";
 // bkgrdImg.onload = () => {
 //   ctx.drawImage(bkgrdImg, 0, 0);
 // };
-ctx.fillStyle = "black";
+
+const defaultColors1 = "#92EDE3";
+const defaultColors2 = "#133964";
+const defaultColors3 = "#A4610D";
+const defaultColors4 = "#3F9F7E";
+
+const cellColor1 = document.querySelector("#cell-color-1");
+const cellColor2 = document.querySelector("#cell-color-2");
+const cellColor3 = document.querySelector("#cell-color-3");
+const cellColor4 = document.querySelector("#cell-color-4");
+
+const colorSlider1 = document.querySelector("#one-grain");
+const colorSlider2 = document.querySelector("#two-grains");
+const colorSlider3 = document.querySelector("#three-grains");
+const colorSlider4 = document.querySelector("#four-grains");
+
+let color1 = "hsl(" + colorSlider1.value.toString() + ", 50%, 50%)";
+let color2 = "hsl(" + colorSlider2.value.toString() + ", 50%, 50%)";
+let color3 = "hsl(" + colorSlider3.value.toString() + ", 50%, 50%)";
+let color4 = "hsl(" + colorSlider4.value.toString() + ", 50%, 50%)";
+
+cellColor1.style.background =
+  "hsl(" + colorSlider1.value.toString() + ", 50%, 50%)";
+cellColor2.style.background =
+  "hsl(" + colorSlider2.value.toString() + ", 50%, 50%)";
+cellColor3.style.background =
+  "hsl(" + colorSlider3.value.toString() + ", 50%, 50%)";
+cellColor4.style.background =
+  "hsl(" + colorSlider4.value.toString() + ", 50%, 50%)";
+
 ctx.fillRect(0, 0, width, height);
 function drawUi() {
   ctxUi.clearRect(0, 0, width, height);
@@ -175,6 +204,33 @@ function populate() {
 }
 
 /** ===================== LISTENERS ===================== */
+
+const bottomDiv = document.querySelector(".bottom");
+
+bottomDiv.addEventListener("mousemove", (e) => {
+  const { target } = e;
+
+  if (target === colorSlider1) {
+    cellColor1.style.background =
+      "hsl(" + colorSlider1.value.toString() + ", 50%, 50%)";
+    color1 = "hsl(" + colorSlider1.value.toString() + ", 50%, 50%)";
+  }
+  if (target === colorSlider2) {
+    cellColor2.style.background =
+      "hsl(" + colorSlider2.value.toString() + ", 50%, 50%)";
+    color2 = "hsl(" + colorSlider2.value.toString() + ", 50%, 50%)";
+  }
+  if (target === colorSlider3) {
+    cellColor3.style.background =
+      "hsl(" + colorSlider3.value.toString() + ", 50%, 50%)";
+    color3 = "hsl(" + colorSlider3.value.toString() + ", 50%, 50%)";
+  }
+  if (target === colorSlider4) {
+    cellColor4.style.background =
+      "hsl(" + colorSlider4.value.toString() + ", 50%, 50%)";
+    color4 = "hsl(" + colorSlider4.value.toString() + ", 50%, 50%)";
+  }
+});
 
 const showGuidelines = document.querySelector("#show-guidelines");
 
@@ -701,7 +757,8 @@ function drawLeftUpper() {
 /** ===================== COLORS ===================== */
 
 function drawRectFull(index) {
-  ctx.fillStyle = "#92EDE3";
+  ctx.fillStyle = color4;
+  console.log(color1, color2, color3, color4);
   ctx.fillRect(
     index % width, // x
     index / width, // y
@@ -710,7 +767,7 @@ function drawRectFull(index) {
   );
 }
 function drawRect3(index) {
-  ctx.fillStyle = "#133964";
+  ctx.fillStyle = color3;
   ctx.fillRect(
     index % width, // x
     index / width, // y
@@ -719,7 +776,7 @@ function drawRect3(index) {
   );
 }
 function drawRect2(index) {
-  ctx.fillStyle = "#A4610D";
+  ctx.fillStyle = color2;
   ctx.fillRect(
     index % width, // x
     index / width, // y
@@ -728,7 +785,7 @@ function drawRect2(index) {
   );
 }
 function drawRect1(index) {
-  ctx.fillStyle = "#3F9F7E";
+  ctx.fillStyle = color1;
   ctx.fillRect(
     index % width, // x
     index / width, // y
