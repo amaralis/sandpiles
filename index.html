@@ -15,8 +15,8 @@
     <main>
       <header class="controls-div">
         <div>
-          <label>
-            Sand grains:<br />
+          <div id="num-grains">
+            <p>Sand grains</p>
             <input
               type="number"
               id="sandpile"
@@ -26,7 +26,7 @@
               step="1"
               size="15px"
             />
-          </label>
+          </div>
         </div>
 
         <div>
@@ -49,7 +49,7 @@
 
       <div class="options-div top">
         <div id="spread">
-          <label for="spread-slider">SPREAD</label>
+          <p>SPREAD</p>
           <input
             type="range"
             id="spread-slider"
@@ -60,13 +60,19 @@
           />
         </div>
 
-        <div id="sand-left">
+        <div
+          id="sand-left"
+          title="How much sand is still being dumped onto the field.
+After it reaches 0, things will probably take a while to settle down.
+When the animation stops, that is called the 'identity element' for 
+that particular sandpile."
+        >
           <p>Backed up sand left</p>
           <span id="sand-left-counter">0</span>
         </div>
 
         <div id="rotate">
-          <label for="rotate-slider">ROTATE</label>
+          <p>ROTATE</p>
 
           <input
             type="range"
@@ -169,26 +175,27 @@
           id="upf"
           title="Use this slider to select how many updates there are per frame of animation"
         >
-          <label
-            >Updates per frame<br /><input
-              type="range"
-              id="timestep-slider"
-              name="timestep"
-              value="1"
-              min="0"
-              max="100"
-              step="1"
-              oninput="document.getElementById('timestep-value').value=this.value" />
-            <input
-              type="number"
-              id="timestep-value"
-              value="1"
-              min="0"
-              max="1000"
-              step="1"
-              size="15px"
-              oninput="document.getElementById('timestep-slider').value=this.value"
-          /></label>
+          <p>Updates per frame</p>
+          <input
+            type="range"
+            id="timestep-slider"
+            name="timestep"
+            value="1"
+            min="0"
+            max="100"
+            step="1"
+            oninput="document.getElementById('timestep-value').value=this.value"
+          />
+          <input
+            type="number"
+            id="timestep-value"
+            value="1"
+            min="0"
+            max="1000"
+            step="1"
+            size="15px"
+            oninput="document.getElementById('timestep-slider').value=this.value"
+          />
         </div>
         <div class="cell-color">
           <div id="cell-color-1">
