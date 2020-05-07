@@ -1,5 +1,5 @@
-const bkgrdImg = new Image();
-bkgrdImg.src = "backgroundcanvas.jpg";
+// const bkgrdImg = new Image();
+// bkgrdImg.src = "backgroundcanvas.jpg";
 const canvas = document.getElementById("sandpile-canvas");
 const UiCanvas = document.getElementById("ui-canvas");
 UiCanvas.style.position = "absolute";
@@ -8,17 +8,17 @@ const height = canvas.height;
 const ctx = canvas.getContext("2d");
 const ctxUi = UiCanvas.getContext("2d");
 UiCanvas.style.left = canvas.getBoundingClientRect().left + "px";
-UiCanvas.style.top = canvas.getBoundingClientRect().top + "px";
-bkgrdImg.onload = () => {
-  ctx.drawImage(bkgrdImg, 0, 0);
-};
-
+UiCanvas.style.top = canvas.getBoundingClientRect().top + window.scrollY + "px";
+// bkgrdImg.onload = () => {
+//   ctx.drawImage(bkgrdImg, 0, 0);
+// };
+ctx.fillStyle = "black";
+ctx.fillRect(0, 0, width, height);
 function drawUi() {
   ctxUi.clearRect(0, 0, width, height);
   requestAnimationFrame(drawUi);
 }
 drawUi();
-console.log(canvas.getBoundingClientRect().left);
 
 const timestepInput = document.querySelector("#timestep-slider");
 let pause = true;
@@ -27,15 +27,24 @@ const pauseBtn = document.querySelector("#pause-button");
 
 function populate() {
   if (freeChkbx.checked) {
+    console.log(seedPixelIndex);
     equivPixelArr[seedPixelIndex] = parseInt(sandVal);
-    console.log("Populating");
+    // for (let i = 0; i < equivPixelArr.length; i++) {
+    //   equivPixelArr[i] > 0 && console.log("Free checkbox", equivPixelArr[i], i);
+    //   nextPixelArr[i] > 0 && console.log(nextPixelArr[i], i);
+    // }
+    console.log("Populating free");
+    console.log(seedPixelIndex);
   }
 
   if (centerChkbx.checked) {
     const index = width / 2 + (height / 2) * width;
     equivPixelArr[index] = parseInt(sandVal);
-
-    console.log("Populating");
+    // for (let i = 0; i < equivPixelArr.length; i++) {
+    //   equivPixelArr[i] > 0 && console.log("Free checkbox", equivPixelArr[i], i);
+    //   nextPixelArr[i] > 0 && console.log(nextPixelArr[i], i);
+    // }
+    console.log("Populating center");
   }
 
   if (twoChkbx.checked) {
@@ -56,7 +65,11 @@ function populate() {
     const indexLeft = Math.round(indexXLeft) + Math.round(indexYLeft) * width;
     equivPixelArr[indexLeft] = parseInt(sandVal);
 
-    console.log("Populating");
+    // for (let i = 0; i < equivPixelArr.length; i++) {
+    //   equivPixelArr[i] > 0 && console.log("Two checkbox", equivPixelArr[i], i);
+    //   nextPixelArr[i] > 0 && console.log(nextPixelArr[i], i);
+    // }
+    console.log("Populating two");
   }
 
   if (twoVertChkbx.checked) {
@@ -77,7 +90,12 @@ function populate() {
       Math.round(indexXBottom) + Math.round(indexYBottom) * width;
     equivPixelArr[indexBottom] = parseInt(sandVal);
 
-    console.log("Populating");
+    // for (let i = 0; i < equivPixelArr.length; i++) {
+    //   equivPixelArr[i] > 0 &&
+    //     console.log("Two vertical checkbox", equivPixelArr[i], i);
+    //   nextPixelArr[i] > 0 && console.log(nextPixelArr[i], i);
+    // }
+    console.log("Populating two vertical");
   }
 
   if (fourChkbx.checked) {
@@ -117,11 +135,123 @@ function populate() {
     const indexLeftTop = Math.round(xLeftTop) + Math.round(yLeftTop) * width;
     equivPixelArr[indexLeftTop] = parseInt(sandVal);
 
-    console.log("Populating");
+    // for (let i = 0; i < equivPixelArr.length; i++) {
+    //   equivPixelArr[i] > 0 && console.log("Four checkbox", equivPixelArr[i], i);
+    //   nextPixelArr[i] > 0 && console.log(nextPixelArr[i], i);
+    // }
+    console.log("Populating four");
   }
 }
 
 /** ===================== LISTENERS ===================== */
+const showGuidelines = document.querySelector("#show-guidelines");
+
+const optionsDiv = document.querySelector(".options-div");
+
+optionsDiv.addEventListener("click", (e) => {
+  const { target } = e;
+  const { checked } = e.target;
+
+  if (target === centerChkbx) {
+    console.log(e.target);
+    console.log(e.target.parentNode);
+    console.log(checked);
+    console.log(e.target.previousSibling.textContent);
+
+    if (checked) {
+      target.previousSibling.textContent =
+        "Click here to turn off middle sand pile";
+      target.parentNode.parentNode.style.background =
+        "linear-gradient(cyan, rgb(0, 120, 120))";
+    } else {
+      target.previousSibling.textContent =
+        "Click here to turn on middle sand piles";
+      target.parentNode.parentNode.style.background =
+        "linear-gradient(rgb(0, 150, 150), rgb(0, 60, 60))";
+    }
+  }
+
+  if (target === twoChkbx) {
+    if (checked) {
+      target.previousSibling.textContent =
+        "Click here to turn off right and left sand piles";
+      target.parentNode.parentNode.style.background =
+        "linear-gradient(cyan, rgb(0, 120, 120))";
+    } else {
+      target.previousSibling.textContent =
+        "Click here to turn on right and left sand piles";
+      target.parentNode.parentNode.style.background =
+        "linear-gradient(rgb(0, 150, 150), rgb(0, 60, 60))";
+    }
+  }
+
+  if (target === twoVertChkbx) {
+    if (checked) {
+      target.previousSibling.textContent =
+        "Click here to turn off top and bottom sand piles";
+      target.parentNode.parentNode.style.background =
+        "linear-gradient(cyan, rgb(0, 120, 120))";
+    } else {
+      target.previousSibling.textContent =
+        "Click here to turn on top and bottom sand piles";
+      target.parentNode.parentNode.style.background =
+        "linear-gradient(rgb(0, 150, 150), rgb(0, 60, 60))";
+    }
+  }
+
+  if (target === fourChkbx) {
+    if (checked) {
+      target.previousSibling.textContent =
+        "Click here to turn off diagonal sand piles";
+      target.parentNode.parentNode.style.background =
+        "linear-gradient(cyan, rgb(0, 120, 120))";
+    } else {
+      target.previousSibling.textContent =
+        "Click here to turn on diagonal sand piles";
+      target.parentNode.parentNode.style.background =
+        "linear-gradient(rgb(0, 150, 150), rgb(0, 60, 60))";
+    }
+  }
+
+  if (target === showGuidelines) {
+    if (checked) {
+      target.parentNode.parentNode.style.background =
+        "linear-gradient(cyan, rgb(0, 120, 120))";
+    } else {
+      target.parentNode.parentNode.style.background =
+        "linear-gradient(rgb(0, 150, 150), rgb(0, 60, 60))";
+    }
+  }
+
+  if (target === freeChkbx) {
+    if (checked) {
+      target.previousSibling.textContent =
+        "Click here to disable free placement";
+      target.parentNode.parentNode.style.background =
+        "linear-gradient(rgb(0, 150, 150), rgb(0, 60, 60))";
+    } else {
+      target.previousSibling.textContent =
+        "Click here to enable free placement";
+      target.parentNode.parentNode.style.background =
+        "linear-gradient(rgb(0, 150, 150), rgb(0, 60, 60))";
+    }
+  }
+});
+
+showGuidelines.addEventListener("click", () => {
+  console.log("Show guidelines clicked. It is " + showGuidelines.checked);
+  console.log("Show guidelines clicked. Pause is " + pause);
+  if (showGuidelines.checked && pause) {
+    UiCanvas.style.zIndex = 1;
+    canvas.style.zIndex = -1;
+    drawGuidelines();
+  }
+  if (!showGuidelines.checked && !pause) {
+    UiCanvas.style.zIndex = -1;
+    canvas.style.zIndex = 1;
+    draw();
+  }
+});
 
 const dumpBtn = document.querySelector("#dump");
 
@@ -129,23 +259,27 @@ dumpBtn.onclick = () => {
   populate();
 };
 
-pauseBtn.addEventListener("click", () => {
+pauseBtn.addEventListener("click", (e) => {
   if (!pause) {
     pause = true;
-    pauseBtn.previousSibling.textContent = "Paused";
+    pauseBtn.value = "Paused";
     UiCanvas.style.zIndex = 1;
     canvas.style.zIndex = -1;
-    // ctx.drawImage(bkgrdImg, 0, 0);
     showGuidelines.checked && drawGuidelines();
-
     console.log("Pause was false and now is true");
+    // e.target.style = "background: linear-gradient(#634c83,#3c1746)";
+    // e.target.style = "color:#aa9c7a;";
   } else {
     pause = false;
     canvas.style.zIndex = 1;
     UiCanvas.style.zIndex = -1;
     console.log("Pause was true and now is false");
-    pauseBtn.previousSibling.textContent = "Simulating";
-    ctx.drawImage(bkgrdImg, 0, 0);
+    pauseBtn.value = "Simulating";
+    // e.target.style = "background: linear-gradient(#8e7aaa,#542361)";
+    // e.target.style = "color:lightgray;";
+    // ctx.drawImage(bkgrdImg, 0, 0);
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, width, height);
     draw();
   }
 });
@@ -157,13 +291,7 @@ spreadSlider.addEventListener("mousemove", () => {
 });
 
 const sandInput = document.querySelector("#sandpile");
-const sandBtn = document.querySelector("#add-sand");
 let sandVal = sandInput.value;
-sandBtn.addEventListener("click", () => {
-  sandVal = sandInput.value;
-  //sandpile = sandVal;
-  console.log(sandVal);
-});
 
 const reset = document.querySelector("#reset");
 reset.addEventListener("click", () => {
@@ -171,20 +299,18 @@ reset.addEventListener("click", () => {
     equivPixelArr[i] = 0;
     nextPixelArr[i] = 0;
   }
-  // ctx.fillStyle = "#000";
-  // ctx.fillRect(0, 0, width, height);
   ctx.clearRect(0, 0, width, height);
   ctx.drawImage(bkgrdImg, 0, 0);
 });
 
+const freeChkbx = document.querySelector("#free");
+
 canvas.addEventListener("click", (e) => {
   mouseX = e.clientX - canvas.offsetLeft;
-  mouseY = e.clientY - canvas.offsetTop;
-  console.log("Canvas clicked");
-});
+  mouseY = e.clientY + window.scrollY - canvas.offsetTop;
 
-const freeChkbx = document.querySelector("#free");
-canvas.addEventListener("click", () => {
+  console.log("Canvas clicked");
+
   if (freeChkbx.checked) {
     seedPixelIndex = mouseX + mouseY * width;
     populate();
@@ -244,7 +370,7 @@ function drawCenterLine() {
     centerStartPoint.y + centerLineRight.mag * Math.sin(degToRad(-rotateVal))
   );
   ctxUi.strokeStyle = centerStrokeStyle;
-  ctxUi.lineWidth = 0.2;
+  ctxUi.lineWidth = 1;
   ctxUi.stroke();
   ctxUi.closePath();
 
@@ -323,7 +449,7 @@ function drawCrossLine() {
     centerStartPoint.y + width * Math.sin(degToRad(-rotateVal - 90))
   );
   ctxUi.strokeStyle = centerStrokeStyle;
-  ctxUi.lineWidth = 0.2;
+  ctxUi.lineWidth = 1;
   ctxUi.stroke();
   ctxUi.closePath();
 
@@ -406,7 +532,7 @@ function drawDiagLine1() {
       centerLineRight.mag * Math.sin(degToRad(-rotateVal - 45))
   );
   ctxUi.strokeStyle = centerStrokeStyle;
-  ctxUi.lineWidth = 0.2;
+  ctxUi.lineWidth = 1;
   ctxUi.stroke();
   ctxUi.closePath();
 }
@@ -418,7 +544,7 @@ function drawDiagLine2() {
     centerStartPoint.y + width * Math.sin(degToRad(-rotateVal - 135))
   );
   ctxUi.strokeStyle = centerStrokeStyle;
-  ctxUi.lineWidth = 0.2;
+  ctxUi.lineWidth = 1;
   ctxUi.stroke();
   ctxUi.closePath();
 }
@@ -430,7 +556,7 @@ function drawDiagLine3() {
     centerStartPoint.y + width * Math.sin(degToRad(-rotateVal - 225))
   );
   ctxUi.strokeStyle = centerStrokeStyle;
-  ctxUi.lineWidth = 0.2;
+  ctxUi.lineWidth = 1;
   ctxUi.stroke();
   ctxUi.closePath();
 }
@@ -444,7 +570,7 @@ function drawDiagLine4() {
       centerLineRight.mag * Math.sin(degToRad(-rotateVal - 315))
   );
   ctxUi.strokeStyle = centerStrokeStyle;
-  ctxUi.lineWidth = 0.2;
+  ctxUi.lineWidth = 1;
   ctxUi.stroke();
   ctxUi.closePath();
 }
@@ -578,25 +704,20 @@ function paint(index) {
 
 function toppleUp(currentIndex) {
   nextPixelArr[currentIndex]++;
-  //paint(nextPixelArr[currentIndex]);
 }
 function toppleRight(currentIndex) {
   nextPixelArr[currentIndex]++;
-  //(nextPixelArr[currentIndex]);
 }
 function toppleDown(currentIndex) {
   nextPixelArr[currentIndex]++;
-  //paint(nextPixelArr[currentIndex]);
 }
 function toppleLeft(currentIndex) {
   nextPixelArr[currentIndex]++;
-  //paint(nextPixelArr[currentIndex]);
 }
 
 function topple(currentIndex) {
   nextPixelArr[currentIndex] += equivPixelArr[currentIndex] - 4;
 
-  //paint(nextPixelArr[currentIndex]);
   !(currentIndex < width) && toppleUp(currentIndex - width);
   !rightEdgeArr.includes(currentIndex) && toppleRight(currentIndex + 1);
   !(currentIndex > nextPixelArr.length - width) &&
@@ -638,7 +759,7 @@ leftEdge(equivPixelArr, width);
 let mouseX = 0;
 let mouseY = 0;
 
-let seedPixelIndex = 0;
+let seedPixelIndex = undefined;
 
 function update() {
   nextPixelArr = new Array(pixelData.data.length / 4);
@@ -650,14 +771,12 @@ function update() {
   for (let i = 0; i < equivPixelArr.length; i++) {
     if (equivPixelArr[i] < 4) {
       nextPixelArr[i] = equivPixelArr[i];
-      //paint(i);
     }
   }
 
   for (let i = 0; i < equivPixelArr.length; i++) {
     if (equivPixelArr[i] > 3) {
       topple(i);
-      //paint(i);
     }
   }
 
@@ -679,7 +798,6 @@ function pauseUnpause() {
     requestAnimationFrame(draw);
   }
 }
-const showGuidelines = document.querySelector("#show-guidelines");
 
 const drawGuidelines = () => {
   ctxUi.clearRect(0, 0, width, height);
@@ -724,24 +842,5 @@ drawGuidelines();
 
 function draw() {
   console.log("Rendering main");
-  // ctx.fillStyle = "#000";
-  // ctx.fillRect(0, 0, width, height);
-  // ctx.clearRect(0, 0, width, height);
   pauseUnpause();
 }
-showGuidelines.addEventListener("click", () => {
-  console.log("Show guidelines clicked. It is " + showGuidelines.checked);
-  console.log("Show guidelines clicked. Pause is " + pause);
-  if (showGuidelines.checked && pause) {
-    UiCanvas.style.zIndex = 1;
-    canvas.style.zIndex = -1;
-    drawGuidelines();
-  }
-  if (!showGuidelines.checked && !pause) {
-    UiCanvas.style.zIndex = -1;
-    canvas.style.zIndex = 1;
-    // ctx.fillStyle = "#000";
-    // ctx.fillRect(0, 0, width, height);
-    draw();
-  }
-});

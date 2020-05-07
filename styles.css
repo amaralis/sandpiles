@@ -2,60 +2,203 @@
   padding: 0;
   margin: 0;
   box-sizing: border-box;
+  font-family: ;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -o-appearance: none;
+  -ms-appearance: none;
 }
 
 body {
   background-color: #333;
+  overflow-x: hidden;
+  font-family: "Catamaran", sans-serif;
 }
 
 main {
   display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-size: 1.5rem;
+  color: white;
 }
 
 #ui-canvas {
   z-index: 1;
 }
 
-/* #canvas-wrapper {
-  height: 800px;
-  min-width: 800px;
-  overflow: hidden;
-  background-image: "backgroundcanvas.jpg";
-} */
+input[type="button"] {
+  padding: 10px 15px;
+  border-radius: 20px;
+  text-align: center;
+  cursor: pointer;
+  font-weight: bold;
+  background-image: linear-gradient(#8e7aaa, #542361);
+  border: 1px solid #6639a6;
+  color: lightgray;
+  text-shadow: 0px 0px 5px black;
+}
+
+input[type="button"]:active {
+  color: white;
+}
+
+input[type="checkbox"]:hover {
+  cursor: help;
+}
 
 .controls-div {
   display: flex;
-  flex: 1;
-  flex-direction: column;
-  justify-content: space-around;
-  padding: 50px;
+  justify-content: space-evenly;
   font-size: 1.5rem;
   font-weight: bold;
+}
+
+.controls-div div {
+  display: flex;
+  align-content: center;
+  align-items: center;
+  justify-content: center;
+  justify-items: center;
+  padding: 1vw;
+  flex: 1;
+  border: 1px solid rgb(0, 200, 200);
+  border-radius: 20px;
+  margin: 1vw;
+  padding: 1.6rem;
+}
+
+.controls-div div label {
+  text-align: center;
 }
 
 .controls-div input {
   margin: 1rem;
   font-size: 1.5rem;
+  width: 100%;
 }
+
+#dump {
+  margin: 1rem;
+  font-size: 1.5rem;
+  padding: 10px 15px;
+  border-radius: 20px;
+  text-align: center;
+  cursor: pointer;
+  font-weight: bold;
+  background-image: linear-gradient(#8e7aaa, #542361);
+  border: 1px solid #6639a6;
+  color: lightgray;
+  text-shadow: 0px 0px 5px black;
+  width: 150%;
+}
+#dump:active {
+  background-image: linear-gradient(#655779, #4b3352);
+  color: darkgray;
+}
+
+#pause-button {
+  min-width: 200px;
+}
+/* #pause-button:active {
+  background-image: linear-gradient(#655779, #4b3352);
+  color: black;
+} */
 
 .controls-div input[type="number"] {
+  padding: 10px 15px;
   width: 90px;
+  border-radius: 20px;
+  text-align: center;
+  font-weight: bold;
+  background-image: linear-gradient(#6fe7dd, #3490de);
+  border: 1px solid #6fe7dd;
 }
 
-.options-div {
+#reset:active {
+  background-image: linear-gradient(#655779, #4b3352);
+  color: darkgray;
+}
+
+#start-sim-label {
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  -ms-flex-direction: column;
+  align-items: center;
 }
 
 #sandpile {
   width: 120px;
+  padding: 5px;
+  text-align: center;
 }
 
-#pause-button {
-  width: 50px;
+/* ================ CANVAS AND OPTIONS DIV ================ */
+
+#canvas-wrapper {
+  border: 2px solid cyan;
 }
 
-#add-sand {
-  padding: 1rem;
+#canvas-and-options {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  max-height: 900px;
+  width: 100vw;
+}
+
+/* ================ OPTIONS DIV ================ */
+
+.options-div {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 2;
+  justify-content: space-between;
+  align-content: center;
+  flex-wrap: wrap;
+  height: 800px;
+
+  /* min-width messes up UI canvas */
+}
+
+.options-div div {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgb(0, 200, 200);
+  border-radius: 20px;
+  padding: 1.6rem;
+  cursor: pointer;
+  background-image: linear-gradient(cyan, rgb(0, 120, 120));
+  background-image: -webkit-linear-gradient(cyan, rgb(0, 120, 120));
+  background-image: -moz-linear-gradient(cyan, rgb(0, 120, 120));
+  text-shadow: 0px 0px 2px black;
+}
+
+.options-div div:hover {
+  background: cyan;
+}
+.options-div div:hover > label {
+  color: #333;
+}
+
+.options-div label:hover {
+  cursor: pointer;
 }
