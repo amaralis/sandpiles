@@ -13,7 +13,7 @@
   </head>
   <body>
     <main>
-      <aside class="controls-div">
+      <header class="controls-div">
         <div>
           <label>
             Sand grains:<br />
@@ -45,7 +45,7 @@
         <div>
           <input type="button" id="reset" value="Reset" />
         </div>
-      </aside>
+      </header>
 
       <div class="options-div top">
         <div id="spread">
@@ -55,13 +55,13 @@
             id="spread-slider"
             value="40"
             min="0"
-            max="400"
+            max="250"
             step="1"
           />
         </div>
 
         <div id="sand-left">
-          <p>Backed up sand left:</p>
+          <p>Backed up sand left</p>
           <span id="sand-left-counter">0</span>
         </div>
 
@@ -165,7 +165,10 @@
         </aside>
       </div>
       <div class="options-div bottom">
-        <div id="upf">
+        <div
+          id="upf"
+          title="Use this slider to select how many updates there are per frame of animation"
+        >
           <label
             >Updates per frame<br /><input
               type="range"
