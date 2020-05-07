@@ -839,16 +839,6 @@ function paintEverything() {
   }
 }
 
-function pauseUnpause() {
-  if (pause === false) {
-    for (let i = 0; i < timestepInput.value; i++) {
-      update();
-    }
-    paintEverything();
-    requestAnimationFrame(draw);
-  }
-}
-
 const drawGuidelines = () => {
   ctxUi.clearRect(0, 0, width, height);
   if (centerChkbx.checked) {
@@ -886,7 +876,6 @@ const drawGuidelines = () => {
   if (showGuidelines.checked && pause === true) {
     requestAnimationFrame(drawGuidelines);
   }
-  console.log("Rendering guidelines");
 };
 drawGuidelines();
 
@@ -894,11 +883,12 @@ let backedUpSandFallBack = 0;
 
 function draw() {
   updateBackedUpSand();
-  // if(backedUpSand === backedUpSandFallBack){
-  //   // Backed up sand may not go down to zero if it gets there in the middle of an update cycle
-  //   backedUpSand = 0;
-  // }
   backedUpSandCounter.textContent = backedUpSand;
-  backedUpSandFallBack = backedUpSand;
-  pauseUnpause();
+  if (pause === false) {
+    for (let i = 0; i < timestepInput.value; i++) {
+      update();
+    }
+    paintEverything();
+    requestAnimationFrame(draw);
+  }
 }
