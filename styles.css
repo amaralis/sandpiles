@@ -152,7 +152,10 @@ input[type="checkbox"]:hover {
 
 /* ================ CANVAS AND OPTIONS DIV ================ */
 
-.options-div {
+#sand-left span {
+  color: sandybrown;
+  font-weight: bold;
+  font-size: 2rem;
 }
 
 .top,
@@ -164,7 +167,17 @@ input[type="checkbox"]:hover {
 }
 
 .top div {
-  display: flex;
+  text-align: center;
+}
+
+.top p {
+  font-weight: bold;
+  font-size: 2rem;
+}
+
+.top label {
+  font-weight: bold;
+  font-size: 2rem;
 }
 
 .bottom {

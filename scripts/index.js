@@ -30,48 +30,21 @@ let seedArrVal = [];
 let seedArrIndexes = [];
 
 const updateBackedUpSand = function () {
-  //console.log(seedArrIndexes);
   if (backedUpSand > 0) {
     backedUpSand = 0;
     for (let i = 0; i < seedArrIndexes.length; i++) {
-      // Seed pixel index needs to start as undefined
+      // Seed pixel index may need to start as undefined (would have to encounter a bug)
 
       // if (seedArrIndexes[i] === undefined) {
       //   seedArrIndexes[i] = 0;
       // }
+
       backedUpSand += equivPixelArr[seedArrIndexes[i]];
-
-      // console.log(`Backed up sand at update's inner loop is: ${backedUpSand}
-      // Adding values from equivArr[${seedArrIndexes[i]}]`);
-
-      // console.log(`backedUpSand = ${backedUpSand}
-      // seedArrVal[i] = ${seedArrVal[i]}`);
     }
   }
 };
 
 function populate() {
-  if (freeChkbx.checked) {
-    equivPixelArr[seedPixelIndex] = parseInt(sandVal);
-
-    // seedArrVal.push(equivPixelArr[seedPixelIndex]);
-    // seedArrIndexes.push(seedPixelIndex);
-
-    // for (let i = 0; i < seedArrVal.length; i++) {
-    //   if (!seedArrVal.includes(equivPixelArr[seedPixelIndex])) {
-    //     seedArrVal[i] = equivPixelArr[seedPixelIndex];
-    //   } else {
-    //     seedArrVal.push(equivPixelArr[seedPixelIndex]);
-    //   }
-    //   console.log(seedArrVal[i]);
-    // }
-
-    // for (let i = 0; i < equivPixelArr.length; i++) {
-    //   equivPixelArr[i] > 0 && console.log("Free checkbox", equivPixelArr[i], i);
-    //   nextPixelArr[i] > 0 && console.log(nextPixelArr[i], i);
-    // }
-  }
-
   if (centerChkbx.checked) {
     const index = width / 2 + (height / 2) * width;
 
@@ -79,19 +52,6 @@ function populate() {
 
     seedArrVal.push(equivPixelArr[index]);
     seedArrIndexes.push(index);
-
-    // for (let i = 0; i < seedArrVal.length; i++) {
-    //   if (seedArrVal.includes(equivPixelArr[index])) {
-    //     seedArrVal[i] = equivPixelArr[index];
-    //   } else {
-    //     seedArrVal.push(equivPixelArr[index]);
-    //   }
-    //   console.log(seedArrVal[i]);
-    // }
-    // for (let i = 0; i < equivPixelArr.length; i++) {
-    //   equivPixelArr[i] > 0 && console.log("Free checkbox", equivPixelArr[i], i);
-    //   nextPixelArr[i] > 0 && console.log(nextPixelArr[i], i);
-    // }
   }
 
   if (twoChkbx.checked) {
@@ -108,15 +68,6 @@ function populate() {
     seedArrVal.push(equivPixelArr[indexRight]);
     seedArrIndexes.push(indexRight);
 
-    // for (let i = 0; i < seedArrVal.length; i++) {
-    //   if (seedArrVal.includes(equivPixelArr[indexRight])) {
-    //     seedArrVal[i] = equivPixelArr[indexRight];
-    //   } else {
-    //     seedArrVal.push(equivPixelArr[indexRight]);
-    //   }
-    //   console.log(seedArrVal[i]);
-    // }
-
     const indexXLeft =
       centerStartPoint.x - spreadVal * Math.cos(degToRad(-rotateVal));
     const indexYLeft =
@@ -128,20 +79,6 @@ function populate() {
 
     seedArrVal.push(equivPixelArr[indexLeft]);
     seedArrIndexes.push(indexLeft);
-
-    // for (let i = 0; i < seedArrVal.length; i++) {
-    //   if (seedArrVal.includes(equivPixelArr[indexLeft])) {
-    //     seedArrVal[i] = equivPixelArr[indexLeft];
-    //   } else {
-    //     seedArrVal.push(equivPixelArr[indexLeft]);
-    //   }
-    //   console.log(seedArrVal[i]);
-    // }
-
-    // for (let i = 0; i < equivPixelArr.length; i++) {
-    //   equivPixelArr[i] > 0 && console.log("Two checkbox", equivPixelArr[i], i);
-    //   nextPixelArr[i] > 0 && console.log(nextPixelArr[i], i);
-    // }
   }
 
   if (twoVertChkbx.checked) {
@@ -157,15 +94,6 @@ function populate() {
     seedArrVal.push(equivPixelArr[indexTop]);
     seedArrIndexes.push(indexTop);
 
-    // for (let i = 0; i < seedArrVal.length; i++) {
-    //   if (seedArrVal.includes(equivPixelArr[indexTop])) {
-    //     seedArrVal[i] = equivPixelArr[indexTop];
-    //   } else {
-    //     seedArrVal.push(equivPixelArr[indexTop]);
-    //   }
-    //   console.log(seedArrVal[i]);
-    // }
-
     const indexXBottom =
       centerStartPoint.x - spreadVal * Math.cos(degToRad(-rotateVal - 90));
     const indexYBottom =
@@ -178,21 +106,6 @@ function populate() {
 
     seedArrVal.push(equivPixelArr[indexBottom]);
     seedArrIndexes.push(indexBottom);
-
-    // for (let i = 0; i < seedArrVal.length; i++) {
-    //   if (seedArrVal.includes(equivPixelArr[indexBottom])) {
-    //     seedArrVal[i] = equivPixelArr[indexBottom];
-    //   } else {
-    //     seedArrVal.push(equivPixelArr[indexBottom]);
-    //   }
-    //   console.log(seedArrVal[i]);
-    // }
-
-    // for (let i = 0; i < equivPixelArr.length; i++) {
-    //   equivPixelArr[i] > 0 &&
-    //     console.log("Two vertical checkbox", equivPixelArr[i], i);
-    //   nextPixelArr[i] > 0 && console.log(nextPixelArr[i], i);
-    // }
   }
 
   if (fourChkbx.checked) {
@@ -209,14 +122,6 @@ function populate() {
 
     seedArrVal.push(equivPixelArr[indexRightTop]);
     seedArrIndexes.push(indexRightTop);
-    // for (let i = 0; i < seedArrVal.length; i++) {
-    //   if (seedArrVal.includes(equivPixelArr[indexRightTop])) {
-    //     seedArrVal[i] = equivPixelArr[indexRightTop];
-    //   } else {
-    //     seedArrVal.push(equivPixelArr[indexRightTop]);
-    //   }
-    //   console.log(seedArrVal[i]);
-    // }
 
     const indexXRightBottom =
       centerStartPoint.x + h * Math.cos(degToRad(-rotateVal + 45));
@@ -230,14 +135,6 @@ function populate() {
 
     seedArrVal.push(equivPixelArr[indexRightBottom]);
     seedArrIndexes.push(indexRightBottom);
-    // for (let i = 0; i < seedArrVal.length; i++) {
-    //   if (seedArrVal.includes(equivPixelArr[indexRightBottom])) {
-    //     seedArrVal[i] = equivPixelArr[indexRightBottom];
-    //   } else {
-    //     seedArrVal.push(equivPixelArr[indexRightBottom]);
-    //   }
-    //   console.log(seedArrVal[i]);
-    // }
 
     const xLeftBottom =
       centerStartPoint.x + h * Math.cos(degToRad(-rotateVal + 135));
@@ -250,14 +147,6 @@ function populate() {
 
     seedArrVal.push(equivPixelArr[indexLeftBottom]);
     seedArrIndexes.push(indexLeftBottom);
-    // for (let i = 0; i < seedArrVal.length; i++) {
-    //   if (seedArrVal.includes(equivPixelArr[indexLeftBottom])) {
-    //     seedArrVal[i] = equivPixelArr[indexLeftBottom];
-    //   } else {
-    //     seedArrVal.push(equivPixelArr[indexLeftBottom]);
-    //   }
-    //   console.log(seedArrVal[i]);
-    // }
 
     const xLeftTop =
       centerStartPoint.x + h * Math.cos(degToRad(-rotateVal + 225));
@@ -271,20 +160,6 @@ function populate() {
 
     seedArrVal.push(equivPixelArr[indexLeftTop]);
     seedArrIndexes.push(indexLeftTop);
-    // for (let i = 0; i < seedArrVal.length; i++) {
-    //   if (seedArrVal.includes(equivPixelArr[indexLeftTop])) {
-    //     seedArrVal[i] = equivPixelArr[indexLeftTop];
-    //     console.log(seedArrVal[i]);
-    //   } else {
-    //     seedArrVal.push(equivPixelArr[indexLeftTop]);
-    //   }
-    //   console.log(i);
-    // }
-
-    // for (let i = 0; i < equivPixelArr.length; i++) {
-    //   equivPixelArr[i] > 0 && console.log("Four checkbox", equivPixelArr[i], i);
-    //   nextPixelArr[i] > 0 && console.log(nextPixelArr[i], i);
-    // }
   }
 
   // Add all seed inexes' sand amount together and add the total to the total backed up sand
@@ -293,9 +168,6 @@ function populate() {
   for (let i = 0; i < seedArrVal.length; i++) {
     if (seedArrVal[i] !== undefined) {
       backedUpSand += seedArrVal[i];
-
-      console.log(`backedUpSand = ${backedUpSand}
-      seedArrVal[i] = ${seedArrVal[i]}`);
     }
   }
   backedUpSandCounter.textContent = parseInt(backedUpSand);
@@ -487,9 +359,11 @@ canvas.addEventListener("click", (e) => {
   if (freeChkbx.checked) {
     seedPixelIndex = mouseX + mouseY * width;
 
+    equivPixelArr[seedPixelIndex] = parseInt(sandVal);
+
     seedArrVal.push(equivPixelArr[seedPixelIndex]);
 
-    populate();
+    //populate();
   }
 });
 
@@ -1016,20 +890,15 @@ const drawGuidelines = () => {
 };
 drawGuidelines();
 
-let newBackedUpSand = 0;
+let backedUpSandFallBack = 0;
 
 function draw() {
-  // Update backed up sand counter
-  // for (let i = 0; i < seedArrVal.length; i++) {
-  //   newBackedUpSand += seedArrVal[i];
-  //   console.log(seedArrVal[i]);
-  // }
-  // console.log(newBackedUpSand);
-  // backedUpSand = newBackedUpSand;
-  console.log(backedUpSand);
   updateBackedUpSand();
-  console.log(backedUpSand);
-  // newBackedUpSand = 0;
+  // if(backedUpSand === backedUpSandFallBack){
+  //   // Backed up sand may not go down to zero if it gets there in the middle of an update cycle
+  //   backedUpSand = 0;
+  // }
   backedUpSandCounter.textContent = backedUpSand;
+  backedUpSandFallBack = backedUpSand;
   pauseUnpause();
 }
