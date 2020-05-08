@@ -1,4 +1,6 @@
-const bgImg = document.getElementById("bg-div");
+const bgDiv = document.getElementById("bg-div");
+
+const canvasWrapper = document.getElementById("canvas-wrapper");
 
 const canvas = document.getElementById("sandpile-canvas");
 canvas.style.position = "absolute";
@@ -15,6 +17,8 @@ uiCanvas.style.position = "absolute";
 const width = canvas.width;
 const height = canvas.height;
 
+console.log(canvas.width);
+
 const ctx = canvas.getContext("2d");
 const ctxUi = uiCanvas.getContext("2d");
 
@@ -22,269 +26,33 @@ const bg = document.querySelector("#bg");
 
 bg.style.position = "absolute";
 bg.style.zIndex = 1;
+bg.style.filter = "opacity(0%)";
+bg.style.webkitFilter = "opacity(0%)";
+
+let widthStr = canvas.width.toString() + "px";
+let heightStr = canvas.width.toString() + "px";
+let wrapperWidthStr = (canvas.width + 4).toString() + "px";
+let wrapperHeightStr = (canvas.width + 4).toString() + "px";
+
+canvasWrapper.style.width = wrapperWidthStr;
+canvasWrapper.style.height = wrapperHeightStr;
+canvasWrapper.zIndex = 1;
+bg.style.width = widthStr;
+bg.style.height = heightStr;
+bgDiv.style.width = widthStr;
+bgDiv.style.height = heightStr;
+
+console.log(canvasWrapper.style.height, canvasWrapper.style.width);
 
 // bg.style.left = canvas.getBoundingClientRect().left + "px";
 // bg.style.top = canvas.getBoundingClientRect().top + window.scrollY + "px";
 
-// const canvasWrapper = document.querySelector("#canvas-wrapper");
-// canvasWrapper.zIndex = -4;
-
-// bkgrdCanvas.style.top =
-//   canvas.getBoundingClientRect().top + window.scrollY + "px";
-
-// let bgData = ctxBg.getImageData(0, 0, width, height);
-// let newBgData;
-// let bgPixel;
-// let bgAngle = 0;
-
-// function rotateRgba(r, g, b, a) {
-//   const hslaArr = rgbaToHsla(r, g, b, a);
-//   hslaArr[0] += bgAngle;
-//   if (hslaArr[0] > 360) {
-//     hslaArr[0] -= 360;
-//   }
-
-//   // console.log(hslaArr);
-//   // hslaArr[1] = Math.floor(Math.random() * 100 - 40 + 40);
-//   // hslaArr[2] = Math.floor(Math.random() * 100 - 40 + 40);
-//   const rgbaArr = hslToRgb(hslaArr[0], hslaArr[1], hslaArr[2]);
-//   // console.log(rgbaArr);
-
-//   return rgbaArr;
-// }
-
-// function compileImage() {
-//   ctxBg.drawImage(bkgrdImg, 0, 0);
-//   // bgData = ctxBg.getImageData(0, 0, width, height);
-//   //console.log(bgData.data);
-//   for (let i = 0; i < bgData.data.length; i += 4) {
-//     bgPixel = rotateRgba(
-//       bgData.data[i],
-//       bgData.data[i + 1],
-//       bgData.data[i + 2],
-//       bgData.data[i + 3]
-//     );
-//     // console.log(bgData.data[i]);
-//     // console.log(bgData.data[i + 1]);
-//     // console.log(bgData.data[i + 2]);
-//     // console.log(bgData.data[i + 3]);
-
-//     bgData.data[i] = bgPixel[0];
-//     bgData.data[i + 1] = bgPixel[1];
-//     bgData.data[i + 2] = bgPixel[2];
-//     bgData.data[i + 3] = bgPixel[3];
-
-//     // newBgData.push(bgData[i])
-//     // newBgData.push(bgData[i+1])
-//     // newBgData.push(bgData[i+2])
-//     // newBgData.push(50)
-//   }
-//   //console.log(bgData);
-//   ctxBg.putImageData(bgData, 0, 0);
-//   bgAngle += 10;
-//   // console.log(bgData.data);
-//   // ctxBg.putImageData(bgData, 0, 0);
-//   // console.log(bgData.data);
-// }
-
-// bkgrdImg.onload = () => {
-//   ctxBg.drawImage(bkgrdImg, 0, 0);
-//   // bgData = ctxBg.getImageData(0, 0, width, height);
-//   // //console.log(bgData.data);
-//   // for (let i = 0; i < bgData.data.length; i += 4) {
-//   //   bgPixel = rotateRgba(
-//   //     bgData.data[i],
-//   //     bgData.data[i + 1],
-//   //     bgData.data[i + 2],
-//   //     bgData.data[i + 3]
-//   //   );
-//   //   // console.log(bgData.data[i]);
-//   //   // console.log(bgData.data[i + 1]);
-//   //   // console.log(bgData.data[i + 2]);
-//   //   // console.log(bgData.data[i + 3]);
-
-//   //   bgData.data[i] = bgPixel[0];
-//   //   bgData.data[i + 1] = bgPixel[1];
-//   //   bgData.data[i + 2] = bgPixel[2];
-//   //   bgData.data[i + 3] = bgPixel[3];
-
-//   //   // newBgData.push(bgData[i])
-//   //   // newBgData.push(bgData[i+1])
-//   //   // newBgData.push(bgData[i+2])
-//   //   // newBgData.push(50)
-//   // }
-//   // //console.log(bgData);
-//   // ctxBg.putImageData(bgData, 0, 0);
-//   // // console.log(bgData.data);
-//   // // ctxBg.putImageData(bgData, 0, 0);
-//   // // console.log(bgData.data);
-// };
-
-// // convert rgb to hsl
-
-// function rgbaToHsla(r, g, b, a) {
-//   r /= 255;
-//   g /= 255;
-//   b /= 255;
-//   a = 150;
-
-//   let cMin = Math.min(r, g, b);
-//   let cMax = Math.max(r, g, b);
-//   let cDelta = cMax - cMin;
-
-//   let h = 0;
-//   let s = 0;
-//   let l = 0;
-
-//   // Calculate hue
-
-//   if (cDelta == 0) {
-//     h = 0;
-//   } else if (cMax == r) {
-//     h = ((g - b) / cDelta) % 6;
-//   } else if (cMax == g) {
-//     h = (b - r) / cDelta + 2;
-//   } else {
-//     h = (r - g) / cDelta + 4;
-//   }
-
-//   h = Math.round(h * 60);
-
-//   // Guard against negative hues by adding 360 degrees
-//   if (h < 0) {
-//     h += 360;
-//   }
-
-//   // Fudge saturation and lightness; we'll leave alpha at max
-
-//   // // Calculate lightness
-//   // l = (cMax + cMin) / 2;
-
-//   // // Calculate saturation
-//   // s = cDelta == 0 ? 0 : cDelta / (1 - Math.abs(2 * l - 1));
-
-//   // // Multiply l and s by 100
-//   // s = +(s * 100).toFixed(1);
-//   // l = +(l * 100).toFixed(1);
-
-//   s = Math.round(Math.random() * 100);
-//   l = Math.round(Math.random() * 100);
-
-//   return [h, s, l, a];
-// }
-
-// // Convert hsl to rgb
-
-// function hslToRgb(h, s, l) {
-//   // if (hue == undefined) {
-//   //   return [0, 0, 0];
-//   // }
-
-//   // let chroma = (1 - Math.abs(2 * lightness - 1)) * saturation;
-//   // let huePrime = hue / 60;
-//   // let secondComponent = chroma * (1 - Math.abs((huePrime % 2) - 1));
-
-//   // huePrime = Math.floor(huePrime);
-//   // let red;
-//   // let green;
-//   // let blue;
-
-//   // if (huePrime === 0) {
-//   //   red = chroma;
-//   //   green = secondComponent;
-//   //   blue = 0;
-//   // } else if (huePrime === 1) {
-//   //   red = secondComponent;
-//   //   green = chroma;
-//   //   blue = 0;
-//   // } else if (huePrime === 2) {
-//   //   red = 0;
-//   //   green = chroma;
-//   //   blue = secondComponent;
-//   // } else if (huePrime === 3) {
-//   //   red = 0;
-//   //   green = secondComponent;
-//   //   blue = chroma;
-//   // } else if (huePrime === 4) {
-//   //   red = secondComponent;
-//   //   green = 0;
-//   //   blue = chroma;
-//   // } else if (huePrime === 5) {
-//   //   red = chroma;
-//   //   green = 0;
-//   //   blue = secondComponent;
-//   // }
-
-//   // let lightnessAdjustment = lightness - chroma / 2;
-//   // red += lightnessAdjustment;
-//   // green += lightnessAdjustment;
-//   // blue += lightnessAdjustment;
-
-//   // return [
-//   //   Math.round(red * 255),
-//   //   Math.round(green * 255),
-//   //   Math.round(blue * 255),
-//   // ];
-
-//   // ========================= Different algorithm =========================
-
-//   // Must be fractions of 1
-
-//   //console.log(h, s, l);
-
-//   s /= 100;
-//   l /= 100;
-
-//   //console.log(h, s, l);
-
-//   let chroma = (1 - Math.abs(2 * l - 1)) * s;
-//   let x = chroma * (1 - Math.abs(((h / 60) % 2) - 1));
-//   let m = 1 - chroma / 2; //(The amount we'll add to each channel to match the lightness)
-//   let r = 0;
-//   let g = 0;
-//   let b = 0;
-
-//   if (0 <= h && h < 60) {
-//     r = chroma;
-//     g = x;
-//     b = 0;
-//   } else if (60 <= h && h < 120) {
-//     r = x;
-//     g = chroma;
-//     b = 0;
-//   } else if (120 <= h && h < 180) {
-//     r = 0;
-//     g = chroma;
-//     b = x;
-//   } else if (180 <= h && h < 240) {
-//     r = 0;
-//     g = x;
-//     b = chroma;
-//   } else if (240 <= h && h < 300) {
-//     r = x;
-//     g = 0;
-//     b = chroma;
-//   } else if (300 <= h && h < 360) {
-//     r = chroma;
-//     g = 0;
-//     b = x;
-//   }
-
-//   r = Math.round((r + m) * 255);
-//   g = Math.round((g + m) * 255);
-//   b = Math.round((b + m) * 255);
-
-//   // return r, g, b, plus alpha channel at max
-
-//   return [r, g, b, 255];
-// }
-
 // Colors for cells
 
-const defaultColors1 = "#92EDE3";
-const defaultColors2 = "#133964";
-const defaultColors3 = "#A4610D";
-const defaultColors4 = "#3F9F7E";
+// const defaultColors1 = "#92EDE3";
+// const defaultColors2 = "#133964";
+// const defaultColors3 = "#A4610D";
+// const defaultColors4 = "#3F9F7E";
 
 const cellColor1 = document.querySelector("#cell-color-1");
 const cellColor2 = document.querySelector("#cell-color-2");
@@ -311,7 +79,7 @@ cellColor4.style.background =
   "hsl(" + colorSlider4.value.toString() + ", 50%, 50%)";
 
 function drawUi() {
-  ctxUi.clearRect(100, 100, width, height);
+  ctxUi.clearRect(0, 0, width, height);
   requestAnimationFrame(drawUi);
 }
 drawUi();
@@ -479,22 +247,80 @@ const bottomDiv = document.querySelector(".bottom");
 
 bottomDiv.addEventListener("click", () => {});
 
-let pHAngle = 0;
+let bgPhAngle = 0;
+let sliderPhAngle = 0;
+let cellPhAngle = 0;
 
-function rotateHue() {
-  pHAngle += 5;
-  bg.style["-webkit-filter"] = "hue-rotate(" + pHAngle + "deg)";
-  bg.style.filter = "hue-rotate(" + pHAngle + "deg)";
+function rotateHue(pHLevel) {
+  let numPh = parseInt(pHLevel);
+  if (pHLevel === "9001") {
+    bgPhAngle += 5;
+    sliderPhAngle += 0.1;
+
+    bg.style.webkitFilter = "hue-rotate(" + bgPhAngle + "deg)";
+    bg.style.filter = "hue-rotate(" + bgPhAngle + "deg)";
+
+    colorSlider1.value = ((Math.sin(sliderPhAngle * 0.58) + 1) / 2) * 360;
+    colorSlider2.value = ((Math.sin(sliderPhAngle * 0.36) + 1) / 2) * 360;
+    colorSlider3.value = ((Math.sin(sliderPhAngle * 0.73) + 1) / 2) * 360;
+    colorSlider4.value = ((Math.sin(sliderPhAngle * 0.64) + 1) / 2) * 360;
+
+    cellColor1.style.background =
+      "hsl(" + colorSlider1.value.toString() + ", 50%, 50%)";
+    cellColor2.style.background =
+      "hsl(" + colorSlider2.value.toString() + ", 50%, 50%)";
+    cellColor3.style.background =
+      "hsl(" + colorSlider3.value.toString() + ", 50%, 50%)";
+    cellColor4.style.background =
+      "hsl(" + colorSlider4.value.toString() + ", 50%, 50%)";
+  } else if (numPh >= 6000 && numPh < 9001) {
+    cellPhAngle += 2;
+    if (cellPhAngle > 360) {
+      cellPhAngle = 0;
+    }
+
+    let newColor1Hue = Math.round(cellPhAngle) + 90;
+    if (newColor1Hue > 360) {
+      newColor1Hue -= 360;
+    }
+    let newColor2Hue = Math.round(cellPhAngle) + 180;
+    if (newColor2Hue > 360) {
+      newColor2Hue -= 360;
+    }
+    let newColor3Hue = Math.round(cellPhAngle) + 270;
+    if (newColor3Hue > 360) {
+      newColor3Hue -= 360;
+    }
+    let newColor4Hue = Math.round(cellPhAngle) + 360;
+    if (newColor4Hue > 360) {
+      newColor4Hue -= 360;
+    }
+
+    color1 = "hsl(" + newColor1Hue.toString() + ", 50%, 50%)";
+    color2 = "hsl(" + newColor2Hue.toString() + ", 50%, 50%)";
+    color3 = "hsl(" + newColor3Hue.toString() + ", 50%, 50%)";
+    color4 = "hsl(" + newColor4Hue.toString() + ", 50%, 50%)";
+
+    // console.log(color1, color2, color3, color4);
+  }
+
+  if (bgPhAngle == 360) {
+    bgPhAngle = 0;
+  }
+  if (sliderPhAngle == 360) {
+    sliderPhAngle = 0;
+  }
 }
 
 bottomDiv.addEventListener("mousemove", (e) => {
   const { target } = e;
 
   if (target === pHInput) {
-    if (target.value === "9000") {
+    if (target.value === "9001") {
       pHLabel.textContent = "!!!9000+";
       pHLabel.style.color = "red";
     } else {
+      bgPhAngle = 0;
       pHLabel.textContent = target.value;
       pHLabel.style.color = "white";
     }
@@ -502,7 +328,7 @@ bottomDiv.addEventListener("mousemove", (e) => {
     let opacityVal = Math.round(convertRange(pHInput.value, 0, 9000, 0, 100));
 
     bg.style.filter = "opacity(" + opacityVal + "%);";
-    bg.style.webkitFilter = "brightness(" + opacityVal + "%)";
+    bg.style.webkitFilter = "opacity(" + opacityVal + "%)";
   }
 
   if (target === colorSlider1) {
@@ -684,6 +510,7 @@ pauseBtn.addEventListener("click", (e) => {
 });
 
 const spreadSlider = document.querySelector("#spread-slider");
+spreadSlider.setAttribute("max", width / 4);
 let spreadVal = spreadSlider.value;
 spreadSlider.addEventListener("mousemove", () => {
   spreadVal = spreadSlider.value;
@@ -695,8 +522,7 @@ reset.addEventListener("click", () => {
     equivPixelArr[i] = 0;
     nextPixelArr[i] = 0;
   }
-  ctx.clearRect(100, 100, width, height);
-  ctx.drawImage(bkgrdImg, 0, 0);
+  ctx.clearRect(0, 0, width, height);
 });
 
 const freeChkbx = document.querySelector("#free");
@@ -1189,7 +1015,7 @@ function paintEverything() {
 }
 
 const drawGuidelines = () => {
-  ctxUi.clearRect(100, 100, width, height);
+  ctxUi.clearRect(0, 0, width, height);
   if (centerChkbx.checked) {
     drawCenterPoint();
   }
@@ -1253,7 +1079,7 @@ function draw() {
     }
     paintEverything();
 
-    pHInput.value === "9000" && rotateHue();
+    pHInput.value >= 6000 && rotateHue(pHInput.value);
     requestAnimationFrame(draw);
   }
 }
