@@ -25,6 +25,7 @@
               max="100000"
               step="1"
               size="15px"
+              oninput="document.getElementById('dump').value= `Add ${this.value} grains to your selected spots`"
             />
           </div>
         </div>
@@ -127,6 +128,9 @@ that particular sandpile."
           <div id="canvas-div">
             <canvas id="sandpile-canvas" width="800" height="800"></canvas>
           </div>
+          <!-- <div id="bg-div"> -->
+          <img src="bg.jpg" id="bg" />
+          <!-- </div> -->
         </div>
 
         <aside class="options-div right">
@@ -171,6 +175,10 @@ that particular sandpile."
         </aside>
       </div>
       <div class="options-div bottom">
+        <div id="pH-level-div">
+          <p>Acidity: <span id="pH-level">0</span></p>
+          <input type="range" name="pH" id="pH" value="0" min="0" max="9000" />
+        </div>
         <div
           id="upf"
           title="Use this slider to select how many updates there are per frame of animation"

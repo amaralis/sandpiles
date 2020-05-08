@@ -50,7 +50,7 @@ p {
 }
 
 #ui-canvas {
-  z-index: 1;
+  z-index: 5;
 }
 
 input[type="button"] {
@@ -254,6 +254,14 @@ input[type="checkbox"]:hover {
   margin: 1rem;
 }
 
+#pH-level-div {
+  display: flex;
+  flex-direction: column;
+  -ms-flex-direction: column;
+  justify-content: space-evenly;
+  min-width: 260px;
+}
+
 #upf {
   display: flex;
   flex-direction: column;
@@ -300,6 +308,7 @@ input[type="checkbox"]:hover {
 }
 
 #canvas-wrapper {
+  z-index: 10;
   width: 804px;
   height: 804px;
   border: 2px solid cyan;
@@ -310,6 +319,19 @@ input[type="checkbox"]:hover {
   justify-content: space-evenly;
   justify-content: space-evenly;
   max-height: 900px;
+}
+
+/* ================ BACKGROUND DIV ================ */
+
+/* #bg-div */
+#bg {
+  background-image: url("bg.jpg");
+  z-index: 1;
+
+  width: 800px;
+  height: 800px;
+  filter: opacity(100%);
+  -webkit-filter: opacity(100%);
 }
 
 /* ================ OPTIONS DIV ================ */
