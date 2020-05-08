@@ -1,3 +1,8 @@
+const audio = document.querySelector("#sandstorm");
+console.log(audio);
+audio.muted = true;
+audio.volume = 0.5;
+
 const bgDiv = document.getElementById("bg-div");
 
 const canvasWrapper = document.getElementById("canvas-wrapper");
@@ -16,8 +21,6 @@ uiCanvas.style.position = "absolute";
 
 const width = canvas.width;
 const height = canvas.height;
-
-console.log(canvas.width);
 
 const ctx = canvas.getContext("2d");
 const ctxUi = uiCanvas.getContext("2d");
@@ -41,8 +44,6 @@ bg.style.width = widthStr;
 bg.style.height = heightStr;
 bgDiv.style.width = widthStr;
 bgDiv.style.height = heightStr;
-
-console.log(canvasWrapper.style.height, canvasWrapper.style.width);
 
 document.getElementById("place-free").style.backgroundImage = "none";
 document.getElementById("place-two").style.backgroundImage = "none";
@@ -250,7 +251,66 @@ const pHInput = document.querySelector("#pH");
 
 const bottomDiv = document.querySelector(".bottom");
 
-bottomDiv.addEventListener("click", () => {});
+bottomDiv.addEventListener("mouseup", (e) => {
+  const { target } = e;
+  if (target === pHInput && pHInput.value > 5999) {
+    async function playAudio() {
+      console.log("playing");
+      try {
+        const res = await audio.play();
+        audio.muted = false;
+        res.play();
+      } catch (err) {
+        console.log("Autoplay failed");
+      }
+    }
+    playAudio();
+  }
+
+  if (target === pHInput && pHInput.value < 6000) {
+    audio.pause();
+  }
+});
+
+bottomDiv.addEventListener("keydown", (e) => {
+  const { target } = e;
+
+  console.log(pHInput.value);
+
+  if (target === pHInput) {
+    if (target.value === "9001") {
+      pHLabel.textContent = "!!!9000+";
+      pHLabel.style.color = "red";
+    } else {
+      bgPhAngle = 0;
+      pHLabel.textContent = target.value;
+      pHLabel.style.color = "white";
+    }
+
+    let opacityVal = Math.round(convertRange(pHInput.value, 0, 9000, 0, 100));
+
+    bg.style.filter = "opacity(" + opacityVal + "%);";
+    bg.style.webkitFilter = "opacity(" + opacityVal + "%)";
+  }
+
+  if (target === pHInput && pHInput.value > 5999) {
+    async function playAudio() {
+      console.log("playing");
+      try {
+        const res = await audio.play();
+        audio.muted = false;
+        res.play();
+      } catch (err) {
+        console.log("Autoplay failed");
+      }
+    }
+    playAudio();
+  }
+
+  if (target === pHInput && pHInput.value < 6000) {
+    audio.pause();
+  }
+});
 
 let bgPhAngle = 0;
 let sliderPhAngle = 0;
@@ -332,8 +392,6 @@ function rotateHue(pHLevel) {
     color2 = "hsl(" + newColor2Hue.toString() + ", 50%, 50%)";
     color3 = "hsl(" + newColor3Hue.toString() + ", 50%, 50%)";
     color4 = "hsl(" + newColor4Hue.toString() + ", 50%, 50%)";
-
-    // console.log(color1, color2, color3, color4);
   }
 
   if (bgPhAngle == 360) {
@@ -388,7 +446,6 @@ bottomDiv.addEventListener("mousemove", (e) => {
 const showGuidelines = document.querySelector("#show-guidelines");
 
 const optionsDivLeft = document.querySelector(".left");
-console.log(optionsDivLeft);
 const optionsDivRight = document.querySelector(".right");
 
 optionsDivLeft.addEventListener("click", (e) => {
