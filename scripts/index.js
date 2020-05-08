@@ -44,6 +44,11 @@ bgDiv.style.height = heightStr;
 
 console.log(canvasWrapper.style.height, canvasWrapper.style.width);
 
+document.getElementById("place-free").style.backgroundImage = "none";
+document.getElementById("place-two").style.backgroundImage = "none";
+document.getElementById("place-two-vertical").style.backgroundImage = "none";
+document.getElementById("place-four").style.backgroundImage = "none";
+
 // bg.style.left = canvas.getBoundingClientRect().left + "px";
 // bg.style.top = canvas.getBoundingClientRect().top + window.scrollY + "px";
 
@@ -273,6 +278,33 @@ function rotateHue(pHLevel) {
       "hsl(" + colorSlider3.value.toString() + ", 50%, 50%)";
     cellColor4.style.background =
       "hsl(" + colorSlider4.value.toString() + ", 50%, 50%)";
+
+    cellPhAngle += 2;
+    if (cellPhAngle > 360) {
+      cellPhAngle = 0;
+    }
+
+    let newColor1Hue = Math.round(cellPhAngle) + 90;
+    if (newColor1Hue > 360) {
+      newColor1Hue -= 360;
+    }
+    let newColor2Hue = Math.round(cellPhAngle) + 180;
+    if (newColor2Hue > 360) {
+      newColor2Hue -= 360;
+    }
+    let newColor3Hue = Math.round(cellPhAngle) + 270;
+    if (newColor3Hue > 360) {
+      newColor3Hue -= 360;
+    }
+    let newColor4Hue = Math.round(cellPhAngle) + 360;
+    if (newColor4Hue > 360) {
+      newColor4Hue -= 360;
+    }
+
+    color1 = "hsl(" + newColor1Hue.toString() + ", 50%, 50%)";
+    color2 = "hsl(" + newColor2Hue.toString() + ", 50%, 50%)";
+    color3 = "hsl(" + newColor3Hue.toString() + ", 50%, 50%)";
+    color4 = "hsl(" + newColor4Hue.toString() + ", 50%, 50%)";
   } else if (numPh >= 6000 && numPh < 9001) {
     cellPhAngle += 2;
     if (cellPhAngle > 360) {
