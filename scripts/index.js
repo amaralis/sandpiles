@@ -253,7 +253,7 @@ const bottomDiv = document.querySelector(".bottom");
 
 bottomDiv.addEventListener("mouseup", (e) => {
   const { target } = e;
-  if (target === pHInput && pHInput.value > 5999) {
+  if (target === pHInput && pHInput.value > 5999 && !audio.muted) {
     async function playAudio() {
       console.log("playing");
       try {
@@ -293,7 +293,7 @@ bottomDiv.addEventListener("keydown", (e) => {
     bg.style.webkitFilter = "opacity(" + opacityVal + "%)";
   }
 
-  if (target === pHInput && pHInput.value > 5999) {
+  if (target === pHInput && pHInput.value > 5999 && !audio.muted) {
     async function playAudio() {
       console.log("playing");
       try {
@@ -419,6 +419,24 @@ bottomDiv.addEventListener("mousemove", (e) => {
 
     bg.style.filter = "opacity(" + opacityVal + "%);";
     bg.style.webkitFilter = "opacity(" + opacityVal + "%)";
+  }
+
+  if (target === pHInput && pHInput.value > 5999 && !audio.muted) {
+    async function playAudio() {
+      console.log("playing");
+      try {
+        const res = await audio.play();
+        audio.muted = false;
+        res.play();
+      } catch (err) {
+        console.log("Autoplay failed");
+      }
+    }
+    playAudio();
+  }
+
+  if (target === pHInput && pHInput.value < 6000) {
+    audio.pause();
   }
 
   if (target === colorSlider1) {
