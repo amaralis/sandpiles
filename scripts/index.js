@@ -106,29 +106,26 @@ const updateBackedUpSand = function () {
   if (backedUpSand > 0) {
     backedUpSand = 0;
     for (let i = 0; i < seedArrIndexes.length; i++) {
-      // Seed pixel index may need to start as undefined (would have to encounter a bug)
+      console.log(backedUpSand, seedArrIndexes);
 
-      // if (seedArrIndexes[i] === undefined) {
-      //   seedArrIndexes[i] = 0;
+      // if (seedArrIndexes.length > 1) { // keep this, just in case, delete next line
+      //   console.log(backedUpSand, equivPixelArr[seedArrIndexes[i]]);
+
+      //   //backedUpSand = equivPixelArr[seedArrIndexes[i]]; // keep this, but I think the alternative might have fixed the free placement bug
+      //   backedUpSand += equivPixelArr[seedArrIndexes[i]];
+
+      //   console.log(backedUpSand, equivPixelArr[seedArrIndexes[i]]);
+      // } else {
+      //   console.log(backedUpSand, equivPixelArr[seedArrIndexes[i]]);
+
+      //   backedUpSand = equivPixelArr[seedArrIndexes[i]];
+
+      //   console.log(backedUpSand, equivPixelArr[seedArrIndexes[i]]);
       // }
-      console.log(backedUpSand);
 
-      if (seedArrIndexes.length > 1) {
-        console.log(backedUpSand, equivPixelArr[seedArrIndexes[i]]);
+      backedUpSand += equivPixelArr[seedArrIndexes[i]]; // experimental
 
-        //backedUpSand = equivPixelArr[seedArrIndexes[i]]; // keep this, but I think the alternative might fix the free bug
-        backedUpSand += equivPixelArr[seedArrIndexes[i]];
-
-        console.log(backedUpSand, equivPixelArr[seedArrIndexes[i]]);
-      } else {
-        console.log(backedUpSand, equivPixelArr[seedArrIndexes[i]]);
-
-        backedUpSand = equivPixelArr[seedArrIndexes[i]];
-
-        console.log(backedUpSand, equivPixelArr[seedArrIndexes[i]]);
-      }
-
-      console.log(backedUpSand);
+      console.log(backedUpSand, seedArrIndexes);
     }
     console.log(backedUpSand);
 
@@ -138,18 +135,12 @@ const updateBackedUpSand = function () {
       // This is the mouse click index.
       seedArrIndexes.push(seedPixelIndex);
     }
-
-    // backedUpSand *= seedArrIndexes.length; // this was working, but with latest fixes it's not anymore
-    console.log(backedUpSand, seedArrIndexes.length);
-
-    // seedArrIndexes needs to be reset somewhere
+    console.log(backedUpSand, seedArrIndexes);
   }
 };
 
 function populate() {
-  //if (seedArrIndexes.length > 1) {
-  seedArrIndexes = []; // attempt to fix bug. Still bugged, backedupsand overwrites the other indexes when free placing
-  //}
+  // seedArrIndexes = []; // HIGHLY EXPERIMENTAL - trying to clear when reset. May have fixed things
 
   if (centerChkbx.checked) {
     const index = width / 2 + (height / 2) * width;
@@ -656,6 +647,7 @@ reset.addEventListener("click", () => {
   for (let i = 0; i < equivPixelArr.length; i++) {
     equivPixelArr[i] = 0;
     nextPixelArr[i] = 0;
+    seedArrIndexes = []; // highly experimental - trying to clear indexes here instead of in populate. May have fixed things
   }
   ctx.clearRect(0, 0, width, height);
 });
@@ -668,30 +660,22 @@ uiCanvas.addEventListener("click", (e) => {
   mouseX = e.clientX - canvas.offsetLeft;
   mouseY = e.clientY + window.scrollY - canvas.offsetTop;
 
-  // BackedUpSand overwrites all the previous values/equivPixelArray indexes. Would need to refactor a LOT
-
   if (freeChkbx.checked) {
     seedPixelIndex = mouseX + mouseY * width;
-
-    //seedArrIndexes = []; // attempt to fix bug
-    seedArrIndexes.push(seedPixelIndex); // attempt to fix bug
-
+    seedArrIndexes.push(seedPixelIndex);
     equivPixelArr[seedPixelIndex] = parseInt(sandVal);
     seedArrVal.push(equivPixelArr[seedPixelIndex]);
   }
 
-  // populate(mouseX, mouseY); // instead of calling populate, pull last bits of populate logic in here; reset seedArrIndexes first
-
-  //backedUpSand = 0; // VERY EXPERIMENTAL  but seems to be working
   console.log(backedUpSand);
-  backedUpSand = equivPixelArr[seedPixelIndex]; // VERY EXPERIMENTAL
+  backedUpSand = equivPixelArr[seedPixelIndex];
   console.log(backedUpSand);
 
   for (let i = 0; i < seedArrIndexes.length; i++) {
     // this is attempt to fix bug
     if (seedArrIndexes[i] !== seedPixelIndex) {
       //backedUpSand += equivPixelArr[seedPixelIndex]; // keep this
-      backedUpSand += equivPixelArr[seedArrIndexes[i]]; // keep this
+      backedUpSand += equivPixelArr[seedArrIndexes[i]]; // this is alternative to above, seems to be working
       console.log(backedUpSand, equivPixelArr[seedPixelIndex]);
     }
   }
