@@ -70,10 +70,15 @@ const colorSlider2 = document.querySelector("#two-grains");
 const colorSlider3 = document.querySelector("#three-grains");
 const colorSlider4 = document.querySelector("#four-grains");
 
-let color1 = "hsl(" + colorSlider1.value.toString() + ", 50%, 50%)";
-let color2 = "hsl(" + colorSlider2.value.toString() + ", 50%, 50%)";
-let color3 = "hsl(" + colorSlider3.value.toString() + ", 50%, 50%)";
-let color4 = "hsl(" + colorSlider4.value.toString() + ", 50%, 50%)";
+// let color1 = "hsl(" + colorSlider1.value.toString() + ", 50%, 50%)";
+// let color2 = "hsl(" + colorSlider2.value.toString() + ", 50%, 50%)";
+// let color3 = "hsl(" + colorSlider3.value.toString() + ", 50%, 50%)";
+// let color4 = "hsl(" + colorSlider4.value.toString() + ", 50%, 50%)";
+
+let color1 = "#92EDE3";
+let color2 = "#133964";
+let color3 = "#A4610D";
+let color4 = "#3F9F7E";
 
 cellColor1.style.background =
   "hsl(" + colorSlider1.value.toString() + ", 50%, 50%)";
@@ -107,13 +112,57 @@ const updateBackedUpSand = function () {
       // if (seedArrIndexes[i] === undefined) {
       //   seedArrIndexes[i] = 0;
       // }
+      console.log(backedUpSand);
 
-      backedUpSand += equivPixelArr[seedArrIndexes[i]];
+      if (seedArrIndexes.length > 1) {
+        console.log(backedUpSand, equivPixelArr[seedArrIndexes[i]]);
+
+        backedUpSand = equivPixelArr[seedArrIndexes[i]];
+
+        console.log(backedUpSand, equivPixelArr[seedArrIndexes[i]]);
+      } else {
+        console.log(backedUpSand, equivPixelArr[seedArrIndexes[i]]);
+
+        backedUpSand = equivPixelArr[seedArrIndexes[i]];
+
+        console.log(backedUpSand, equivPixelArr[seedArrIndexes[i]]);
+      }
+
+      console.log(backedUpSand);
     }
+    console.log(backedUpSand);
+
+    console.log(seedPixelIndex);
+
+    if (seedArrIndexes.length === 0) {
+      // This is the mouse click index. But backed up sand is still not updating. Maybe try <= in the loop below
+      seedArrIndexes.push(seedPixelIndex);
+    }
+
+    backedUpSand *= seedArrIndexes.length;
+    console.log(backedUpSand, seedArrIndexes.length);
+
+    // seedArrIndexes needs to be reset somewhere
   }
+  // for (let i = 0; i < seedArrIndexes.length; i++) {
+  //   if (equivPixelArr[seedArrIndexes[i]] > 0) {
+  //     console.log(equivPixelArr[seedArrIndexes[i]]);
+  //   }
+  // }
+  // // backedUpSand *= seedArrIndexes.length;
+  // backedUpSand *= seedArrIndexes.length;
+  // console.log(backedUpSand, seedArrIndexes.length);
+
+  // seedArrIndexes needs to be reset somewhere
 };
 
 function populate() {
+  if (seedArrIndexes.length > 1) {
+    seedArrIndexes = []; // attempt to fix bug (success?)
+  }
+
+  //  seedArrIndexes = []; // attempt to fix bug (success?)
+
   if (centerChkbx.checked) {
     const index = width / 2 + (height / 2) * width;
 
@@ -236,9 +285,12 @@ function populate() {
 
   for (let i = 0; i < seedArrVal.length; i++) {
     if (seedArrVal[i] !== undefined) {
-      backedUpSand += seedArrVal[i];
+      // Backed up sand value is good here
+      backedUpSand = seedArrVal[i];
+      console.log(seedArrVal[i], backedUpSand);
     }
   }
+  console.log(backedUpSand);
   backedUpSandCounter.textContent = parseInt(backedUpSand);
   seedArrVal = [];
 }
@@ -467,12 +519,10 @@ const optionsDivLeft = document.querySelector(".left");
 const optionsDivRight = document.querySelector(".right");
 
 optionsDivLeft.addEventListener("click", (e) => {
-  console.log("Clicked");
   const { target } = e;
   const { checked } = e.target;
 
   if (target === centerChkbx) {
-    console.log("Center clicked");
     if (checked) {
       target.previousSibling.textContent =
         "Click here to turn off middle sand pile";
@@ -554,8 +604,6 @@ optionsDivRight.addEventListener("click", (e) => {
 });
 
 showGuidelines.addEventListener("click", () => {
-  console.log("Show guidelines clicked. It is " + showGuidelines.checked);
-  console.log("Show guidelines clicked. Pause is " + pause);
   if (showGuidelines.checked && pause) {
     uiCanvas.style.zIndex = 5;
     canvas.style.zIndex = 4;
@@ -584,14 +632,15 @@ sandInput.addEventListener("change", () => {
 dumpBtn.onclick = () => {
   sandVal = parseInt(sandInput.value);
   //backedUpSand = parseInt(sandVal);
-  backedUpSandCounter.textContent = backedUpSand;
-  populate();
+  //backedUpSandCounter.textContent = parseInt(backedUpSand);
+  console.log(sandInput.value, sandVal);
+  pause && populate();
 };
 
 const controlsDiv = document.querySelector(".controls-div");
 controlsDiv.addEventListener("change", (e) => {
   if (e.target === sandInput) {
-    dumpBtn.value = `Add ${sandpile.value} grains to your selected spots`;
+    dumpBtn.value = `Pour ${sandpile.value} grains on your selected spots (only when paused)`;
   }
 });
 
@@ -602,6 +651,7 @@ pauseBtn.addEventListener("click", (e) => {
     uiCanvas.style.zIndex = 5;
     canvas.style.zIndex = 4;
     showGuidelines.checked && drawGuidelines();
+
     // e.target.style = "background: linear-gradient(#634c83,#3c1746)";
     // e.target.style = "color:#aa9c7a;";
   } else {
@@ -634,19 +684,53 @@ reset.addEventListener("click", () => {
 
 const freeChkbx = document.querySelector("#free");
 
-canvas.addEventListener("click", (e) => {
+//let tempIndex = 0;
+
+uiCanvas.addEventListener("click", (e) => {
+  // Can't click on the sandpile canvas for some reason. Doesn't matter, still works
+
   mouseX = e.clientX - canvas.offsetLeft;
   mouseY = e.clientY + window.scrollY - canvas.offsetTop;
-
   if (freeChkbx.checked) {
     seedPixelIndex = mouseX + mouseY * width;
+    console.log(equivPixelArr[seedPixelIndex]);
 
+    seedArrIndexes = []; // attempt to fix bug
+    console.log(seedArrIndexes);
+    seedArrIndexes.push(seedPixelIndex); // attempt to fix bug
+
+    console.log(seedArrIndexes);
     equivPixelArr[seedPixelIndex] = parseInt(sandVal);
-
+    console.log(equivPixelArr[seedPixelIndex]);
     seedArrVal.push(equivPixelArr[seedPixelIndex]);
-
-    //populate();
+    console.log(seedArrVal);
   }
+
+  // populate(mouseX, mouseY); // instead of calling populate, pull last bits of populate logic in here; reset seedArrIndexes first
+
+  // seedArrIndexes = [];
+
+  console.log(seedArrIndexes);
+  seedArrIndexes.push[seedPixelIndex];
+  console.log(seedArrIndexes);
+
+  // // no need for for loop. There should only be one element in the array: where the user clicks
+
+  // // for (let i = 0; i < seedArrVal.length; i++) {
+  // //   if (seedArrVal[i] !== undefined) {
+  // //     // Backed up sand value is good here
+  // //     backedUpSand = seedArrVal[i];
+  // //     console.log(seedArrVal[i], backedUpSand);
+  // //   }
+  // // }
+
+  // backedUpSand = seedArrVal[seedArrIndexes[0]];
+  backedUpSand += equivPixelArr[seedPixelIndex];
+  console.log(backedUpSand);
+  console.log("Click");
+  backedUpSandCounter.textContent = parseInt(backedUpSand);
+  console.log(backedUpSandCounter.textContent);
+  seedArrVal = [];
 });
 
 /** ===================== OPTIONS ===================== */
@@ -1187,6 +1271,8 @@ function draw() {
     paintEverything();
 
     pHInput.value >= 6000 && rotateHue(pHInput.value);
+    console.log(backedUpSand);
+
     requestAnimationFrame(draw);
   }
 }

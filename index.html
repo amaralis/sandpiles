@@ -25,7 +25,7 @@
               max="100000"
               step="1"
               size="15px"
-              oninput="document.getElementById('dump').value= `Add ${this.value} grains to your selected spots`"
+              oninput="document.getElementById('dump').value= `Drop ${this.value} grains on your selected spots`"
             />
           </div>
         </div>
@@ -103,7 +103,9 @@ that particular sandpile."
           >
             <label
               >Click this button to freely choose where your sandpiles will be
-              dropped <input type="checkbox" class="regular-checkbox" id="free"
+              dropped. <br />Warning: sand amount left will only reflect the
+              last pile you dropped.
+              <input type="checkbox" class="regular-checkbox" id="free"
             /></label>
           </div>
           <div
@@ -121,11 +123,11 @@ that particular sandpile."
         </aside>
 
         <div id="canvas-wrapper">
-          <div id="canvas-div-ui">
-            <canvas id="ui-canvas" width="800" height="800"></canvas>
-          </div>
           <div id="canvas-div">
             <canvas id="sandpile-canvas" width="800" height="800"></canvas>
+          </div>
+          <div id="canvas-div-ui">
+            <canvas id="ui-canvas" width="800" height="800"></canvas>
           </div>
           <div id="bg-div">
             <img src="bg.jpg" id="bg" />
