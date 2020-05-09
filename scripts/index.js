@@ -1,83 +1,74 @@
-const audio = document.querySelector("#sandstorm");
-audio.muted = true;
-audio.volume = 0.5;
-
-const bgDiv = document.getElementById("bg-div");
+/** ===================== HANDLES, VARIABLES, INITIALIZERS ===================== */
 
 const canvasWrapper = document.getElementById("canvas-wrapper");
-
-const canvas = document.getElementById("sandpile-canvas");
-canvas.style.position = "absolute";
-
-// canvas.style.left = canvas.getBoundingClientRect().left + "px";
-// canvas.style.top = canvas.getBoundingClientRect().top + window.scrollY + "px";
-
 const uiCanvas = document.getElementById("ui-canvas");
-uiCanvas.style.position = "absolute";
-
-// uiCanvas.style.left = canvas.getBoundingClientRect().left + "px";
-// uiCanvas.style.top = canvas.getBoundingClientRect().top + window.scrollY + "px";
-
-const width = canvas.width;
-const height = canvas.height;
-
-const ctx = canvas.getContext("2d");
-const ctxUi = uiCanvas.getContext("2d");
-
-const bg = document.querySelector("#bg");
-
-bg.style.position = "absolute";
-bg.style.zIndex = 1;
-bg.style.filter = "opacity(0%)";
-bg.style.webkitFilter = "opacity(0%)";
-
-let widthStr = canvas.width.toString() + "px";
-let heightStr = canvas.width.toString() + "px";
-let wrapperWidthStr = (canvas.width + 4).toString() + "px";
-let wrapperHeightStr = (canvas.width + 4).toString() + "px";
-
-canvasWrapper.style.width = wrapperWidthStr;
-canvasWrapper.style.height = wrapperHeightStr;
-canvasWrapper.zIndex = 1;
-bg.style.width = widthStr;
-bg.style.height = heightStr;
-bgDiv.style.width = widthStr;
-bgDiv.style.height = heightStr;
-
-document.getElementById("place-free").style.backgroundImage = "none";
-document.getElementById("place-two").style.backgroundImage = "none";
-document.getElementById("place-two-vertical").style.backgroundImage = "none";
-document.getElementById("place-four").style.backgroundImage = "none";
-
-// bg.style.left = canvas.getBoundingClientRect().left + "px";
-// bg.style.top = canvas.getBoundingClientRect().top + window.scrollY + "px";
-
-// Colors for cells
-
-// const defaultColors1 = "#92EDE3";
-// const defaultColors2 = "#133964";
-// const defaultColors3 = "#A4610D";
-// const defaultColors4 = "#3F9F7E";
-
+const pHDiv = document.querySelector(".pH-level-div");
+const pHLabel = document.querySelector("#pH-level");
+const pHInput = document.querySelector("#pH");
+const bottomDiv = document.querySelector(".bottom");
+const twoChkbx = document.querySelector("#two");
+const showGuidelines = document.querySelector("#show-guidelines");
+const optionsDivLeft = document.querySelector(".left");
+const optionsDivRight = document.querySelector(".right");
+const sandInput = document.querySelector("#sandpile");
+const sandRemainingCounter = document.querySelector("#sand-left-counter");
+const dumpBtn = document.querySelector("#dump");
+const controlsDiv = document.querySelector(".controls-div");
+const spreadSlider = document.querySelector("#spread-slider");
+spreadSlider.setAttribute("max", width / 4);
+const reset = document.querySelector("#reset");
+const freeChkbx = document.querySelector("#free");
+const timestepInput = document.querySelector("#timestep-slider");
+const pauseBtn = document.querySelector("#pause-button");
 const cellColor1 = document.querySelector("#cell-color-1");
 const cellColor2 = document.querySelector("#cell-color-2");
 const cellColor3 = document.querySelector("#cell-color-3");
 const cellColor4 = document.querySelector("#cell-color-4");
-
 const colorSlider1 = document.querySelector("#one-grain");
 const colorSlider2 = document.querySelector("#two-grains");
 const colorSlider3 = document.querySelector("#three-grains");
 const colorSlider4 = document.querySelector("#four-grains");
+const ctx = canvas.getContext("2d");
+const ctxUi = uiCanvas.getContext("2d");
+const bg = document.querySelector("#bg");
+const bgDiv = document.getElementById("bg-div");
+const canvas = document.getElementById("sandpile-canvas");
+const audio = document.querySelector("#sandstorm");
 
+// INITIALIZERS
+
+let spreadVal = spreadSlider.value;
+const width = canvas.width;
+const height = canvas.height;
+let sandRemaining = 0;
+let sandInputVal = 0;
+let mouseX = 0;
+let mouseY = 0;
+let seedCellIndex = 0;
+let pause = true;
+let color1 = "#92EDE3";
+let color2 = "#133964";
+let color3 = "#A4610D";
+let color4 = "#3F9F7E";
 // let color1 = "hsl(" + colorSlider1.value.toString() + ", 50%, 50%)";
 // let color2 = "hsl(" + colorSlider2.value.toString() + ", 50%, 50%)";
 // let color3 = "hsl(" + colorSlider3.value.toString() + ", 50%, 50%)";
 // let color4 = "hsl(" + colorSlider4.value.toString() + ", 50%, 50%)";
 
-let color1 = "#92EDE3";
-let color2 = "#133964";
-let color3 = "#A4610D";
-let color4 = "#3F9F7E";
+// INITIALIZERS
+
+const pixelData = ctx.getImageData(0, 0, width, height);
+let cellArr = new Array(pixelData.data.length / 4);
+let nextCellArr = new Array(pixelData.data.length / 4);
+let seedCellIndexes = [];
+let seedCellValues = [];
+let rightEdgeArr = [];
+let leftEdgeArr = [];
+
+document.getElementById("place-free").style.backgroundImage = "none";
+document.getElementById("place-two").style.backgroundImage = "none";
+document.getElementById("place-two-vertical").style.backgroundImage = "none";
+document.getElementById("place-four").style.backgroundImage = "none";
 
 cellColor1.style.background =
   "hsl(" + colorSlider1.value.toString() + ", 50%, 50%)";
@@ -88,182 +79,38 @@ cellColor3.style.background =
 cellColor4.style.background =
   "hsl(" + colorSlider4.value.toString() + ", 50%, 50%)";
 
-function drawUi() {
-  ctxUi.clearRect(0, 0, width, height);
-  requestAnimationFrame(drawUi);
-}
-drawUi();
+let widthStr = canvas.width.toString() + "px";
+let heightStr = canvas.width.toString() + "px";
+let wrapperWidthStr = (canvas.width + 4).toString() + "px";
+let wrapperHeightStr = (canvas.width + 4).toString() + "px";
 
-const timestepInput = document.querySelector("#timestep-slider");
-let pause = true;
+uiCanvas.style.position = "absolute";
+canvas.style.position = "absolute";
+bg.style.position = "absolute";
+bg.style.zIndex = 1;
+bg.style.filter = "opacity(0%)";
+bg.style.webkitFilter = "opacity(0%)";
+bg.style.width = widthStr;
+bg.style.height = heightStr;
+bgDiv.style.width = widthStr;
+bgDiv.style.height = heightStr;
+canvasWrapper.style.width = wrapperWidthStr;
+canvasWrapper.style.height = wrapperHeightStr;
+canvasWrapper.zIndex = 1;
+audio.muted = true;
+audio.volume = 0.5;
 
-const pauseBtn = document.querySelector("#pause-button");
-
-let seedArrVal = [];
-let seedArrIndexes = [];
-
-const updateBackedUpSand = function () {
-  if (backedUpSand > 0) {
-    backedUpSand = 0;
-    for (let i = 0; i < seedArrIndexes.length; i++) {
-      //console.log(backedUpSand, seedArrIndexes);
-
-      backedUpSand += equivPixelArr[seedArrIndexes[i]]; // experimental
-
-      //console.log(backedUpSand, seedArrIndexes);
-    }
-    //console.log(backedUpSand);
-
-    //console.log(seedPixelIndex);
-
-    if (seedArrIndexes.length === 0) {
-      // This is the mouse click index.
-      seedArrIndexes.push(seedPixelIndex);
-    }
-    //console.log(backedUpSand, seedArrIndexes);
-  }
-};
-
-function populate() {
-  // seedArrIndexes = []; // HIGHLY EXPERIMENTAL - trying to clear when reset. May have fixed things
-
-  if (centerChkbx.checked) {
-    const index = width / 2 + (height / 2) * width;
-
-    equivPixelArr[index] = parseInt(sandVal);
-
-    seedArrVal.push(equivPixelArr[index]);
-    seedArrIndexes.push(index);
-  }
-
-  if (twoChkbx.checked) {
-    const indexXRight =
-      centerStartPoint.x + spreadVal * Math.cos(degToRad(-rotateVal));
-    const indexYRight =
-      centerStartPoint.y + spreadVal * Math.sin(degToRad(-rotateVal));
-
-    const indexRight =
-      Math.round(indexXRight) + Math.round(indexYRight) * width;
-
-    equivPixelArr[indexRight] = parseInt(sandVal);
-
-    seedArrVal.push(equivPixelArr[indexRight]);
-    seedArrIndexes.push(indexRight);
-
-    const indexXLeft =
-      centerStartPoint.x - spreadVal * Math.cos(degToRad(-rotateVal));
-    const indexYLeft =
-      centerStartPoint.y - spreadVal * Math.sin(degToRad(-rotateVal));
-
-    const indexLeft = Math.round(indexXLeft) + Math.round(indexYLeft) * width;
-
-    equivPixelArr[indexLeft] = parseInt(sandVal);
-
-    seedArrVal.push(equivPixelArr[indexLeft]);
-    seedArrIndexes.push(indexLeft);
-  }
-
-  if (twoVertChkbx.checked) {
-    const indexXTop =
-      centerStartPoint.x + spreadVal * Math.cos(degToRad(-rotateVal - 90));
-    const indexYTop =
-      centerStartPoint.y + spreadVal * Math.sin(degToRad(-rotateVal - 90));
-
-    const indexTop = Math.round(indexXTop) + Math.round(indexYTop) * width;
-
-    equivPixelArr[indexTop] = parseInt(sandVal);
-
-    seedArrVal.push(equivPixelArr[indexTop]);
-    seedArrIndexes.push(indexTop);
-
-    const indexXBottom =
-      centerStartPoint.x - spreadVal * Math.cos(degToRad(-rotateVal - 90));
-    const indexYBottom =
-      centerStartPoint.y - spreadVal * Math.sin(degToRad(-rotateVal - 90));
-
-    const indexBottom =
-      Math.round(indexXBottom) + Math.round(indexYBottom) * width;
-
-    equivPixelArr[indexBottom] = parseInt(sandVal);
-
-    seedArrVal.push(equivPixelArr[indexBottom]);
-    seedArrIndexes.push(indexBottom);
-  }
-
-  if (fourChkbx.checked) {
-    let h = Math.sqrt(Math.pow(spreadVal, 2) + Math.pow(spreadVal, 2));
-
-    const xRightTop =
-      centerStartPoint.x + h * Math.cos(degToRad(-rotateVal - 45));
-    const yRightTop =
-      centerStartPoint.y + h * Math.sin(degToRad(-rotateVal - 45));
-
-    const indexRightTop = Math.round(xRightTop) + Math.round(yRightTop) * width;
-
-    equivPixelArr[indexRightTop] = parseInt(sandVal);
-
-    seedArrVal.push(equivPixelArr[indexRightTop]);
-    seedArrIndexes.push(indexRightTop);
-
-    const indexXRightBottom =
-      centerStartPoint.x + h * Math.cos(degToRad(-rotateVal + 45));
-    const indexYRightBottom =
-      centerStartPoint.y + h * Math.sin(degToRad(-rotateVal + 45));
-
-    const indexRightBottom =
-      Math.round(indexXRightBottom) + Math.round(indexYRightBottom) * width;
-
-    equivPixelArr[indexRightBottom] = parseInt(sandVal);
-
-    seedArrVal.push(equivPixelArr[indexRightBottom]);
-    seedArrIndexes.push(indexRightBottom);
-
-    const xLeftBottom =
-      centerStartPoint.x + h * Math.cos(degToRad(-rotateVal + 135));
-    const yLeftBottom =
-      centerStartPoint.y + h * Math.sin(degToRad(-rotateVal + 135));
-
-    const indexLeftBottom =
-      Math.round(xLeftBottom) + Math.round(yLeftBottom) * width;
-    equivPixelArr[indexLeftBottom] = parseInt(sandVal);
-
-    seedArrVal.push(equivPixelArr[indexLeftBottom]);
-    seedArrIndexes.push(indexLeftBottom);
-
-    const xLeftTop =
-      centerStartPoint.x + h * Math.cos(degToRad(-rotateVal + 225));
-    const yLeftTop =
-      centerStartPoint.y + h * Math.sin(degToRad(-rotateVal + 225));
-
-    const indexLeftTop = Math.round(xLeftTop) + Math.round(yLeftTop) * width;
-    equivPixelArr[indexLeftTop] = parseInt(sandVal);
-    //console.log(equivPixelArr[indexLeftTop]);
-    //console.log("SandVal = " + sandVal);
-
-    seedArrVal.push(equivPixelArr[indexLeftTop]);
-    seedArrIndexes.push(indexLeftTop);
-  }
-
-  // Add all seed inexes' sand amount together and add the total to the total backed up sand
-
-  for (let i = 0; i < seedArrVal.length; i++) {
-    if (seedArrVal[i] !== undefined) {
-      backedUpSand = seedArrVal[i];
-      //console.log(seedArrVal[i], backedUpSand);
-    }
-  }
-  //console.log(backedUpSand);
-  backedUpSandCounter.textContent = parseInt(backedUpSand);
-  seedArrVal = [];
+// Loop through image pixels, skipping green, blue, and alpha indices; initiate to 0
+for (let i = 0; i < cellArr.length; i++) {
+  cellArr[i / 4] = 0; // Equivalent index for the straight array
 }
 
-/** ===================== LISTENERS ===================== */
+// Loop through image pixels, skipping green, blue, and alpha indices; initiate to 0
+for (let i = 0; i < nextCellArr.length; i++) {
+  nextCellArr[i] = 0;
+}
 
-const pHDiv = document.querySelector(".pH-level-div");
-const pHLabel = document.querySelector("#pH-level");
-const pHInput = document.querySelector("#pH");
-
-const bottomDiv = document.querySelector(".bottom");
+/** ===================== LISTENERS AND HANDLERS ===================== */
 
 bottomDiv.addEventListener("mouseup", (e) => {
   const { target } = e;
@@ -326,96 +173,6 @@ bottomDiv.addEventListener("keydown", (e) => {
   }
 });
 
-let bgPhAngle = 0;
-let sliderPhAngle = 0;
-let cellPhAngle = 0;
-
-function rotateHue(pHLevel) {
-  let numPh = parseInt(pHLevel);
-  if (pHLevel === "9001") {
-    bgPhAngle += 5;
-    sliderPhAngle += 0.1;
-
-    bg.style.webkitFilter = "hue-rotate(" + bgPhAngle + "deg)";
-    bg.style.filter = "hue-rotate(" + bgPhAngle + "deg)";
-
-    colorSlider1.value = ((Math.sin(sliderPhAngle * 0.58) + 1) / 2) * 360;
-    colorSlider2.value = ((Math.sin(sliderPhAngle * 0.36) + 1) / 2) * 360;
-    colorSlider3.value = ((Math.sin(sliderPhAngle * 0.73) + 1) / 2) * 360;
-    colorSlider4.value = ((Math.sin(sliderPhAngle * 0.64) + 1) / 2) * 360;
-
-    cellColor1.style.background =
-      "hsl(" + colorSlider1.value.toString() + ", 50%, 50%)";
-    cellColor2.style.background =
-      "hsl(" + colorSlider2.value.toString() + ", 50%, 50%)";
-    cellColor3.style.background =
-      "hsl(" + colorSlider3.value.toString() + ", 50%, 50%)";
-    cellColor4.style.background =
-      "hsl(" + colorSlider4.value.toString() + ", 50%, 50%)";
-
-    cellPhAngle += 2;
-    if (cellPhAngle > 360) {
-      cellPhAngle = 0;
-    }
-
-    let newColor1Hue = Math.round(cellPhAngle) + 90;
-    if (newColor1Hue > 360) {
-      newColor1Hue -= 360;
-    }
-    let newColor2Hue = Math.round(cellPhAngle) + 180;
-    if (newColor2Hue > 360) {
-      newColor2Hue -= 360;
-    }
-    let newColor3Hue = Math.round(cellPhAngle) + 270;
-    if (newColor3Hue > 360) {
-      newColor3Hue -= 360;
-    }
-    let newColor4Hue = Math.round(cellPhAngle) + 360;
-    if (newColor4Hue > 360) {
-      newColor4Hue -= 360;
-    }
-
-    color1 = "hsl(" + newColor1Hue.toString() + ", 50%, 50%)";
-    color2 = "hsl(" + newColor2Hue.toString() + ", 50%, 50%)";
-    color3 = "hsl(" + newColor3Hue.toString() + ", 50%, 50%)";
-    color4 = "hsl(" + newColor4Hue.toString() + ", 50%, 50%)";
-  } else if (numPh >= 6000 && numPh < 9001) {
-    cellPhAngle += 2;
-    if (cellPhAngle > 360) {
-      cellPhAngle = 0;
-    }
-
-    let newColor1Hue = Math.round(cellPhAngle) + 90;
-    if (newColor1Hue > 360) {
-      newColor1Hue -= 360;
-    }
-    let newColor2Hue = Math.round(cellPhAngle) + 180;
-    if (newColor2Hue > 360) {
-      newColor2Hue -= 360;
-    }
-    let newColor3Hue = Math.round(cellPhAngle) + 270;
-    if (newColor3Hue > 360) {
-      newColor3Hue -= 360;
-    }
-    let newColor4Hue = Math.round(cellPhAngle) + 360;
-    if (newColor4Hue > 360) {
-      newColor4Hue -= 360;
-    }
-
-    color1 = "hsl(" + newColor1Hue.toString() + ", 50%, 50%)";
-    color2 = "hsl(" + newColor2Hue.toString() + ", 50%, 50%)";
-    color3 = "hsl(" + newColor3Hue.toString() + ", 50%, 50%)";
-    color4 = "hsl(" + newColor4Hue.toString() + ", 50%, 50%)";
-  }
-
-  if (bgPhAngle == 360) {
-    bgPhAngle = 0;
-  }
-  if (sliderPhAngle == 360) {
-    sliderPhAngle = 0;
-  }
-}
-
 bottomDiv.addEventListener("mousemove", (e) => {
   const { target } = e;
 
@@ -474,11 +231,6 @@ bottomDiv.addEventListener("mousemove", (e) => {
     color4 = "hsl(" + colorSlider4.value.toString() + ", 50%, 50%)";
   }
 });
-
-const showGuidelines = document.querySelector("#show-guidelines");
-
-const optionsDivLeft = document.querySelector(".left");
-const optionsDivRight = document.querySelector(".right");
 
 optionsDivLeft.addEventListener("click", (e) => {
   const { target } = e;
@@ -578,26 +330,18 @@ showGuidelines.addEventListener("click", () => {
   }
 });
 
-const sandInput = document.querySelector("#sandpile");
-const backedUpSandCounter = document.querySelector("#sand-left-counter");
-const dumpBtn = document.querySelector("#dump");
-
-let backedUpSand = 0;
-let sandVal = 0;
-
 sandInput.addEventListener("change", () => {
   sandInput.setAttribute("value", sandInput.value);
-  sandVal = parseInt(sandInput.value);
-  //console.log(backedUpSand, sandVal);
+  sandInputVal = parseInt(sandInput.value);
+  //console.log(sandRemaining, sandInputVal);
 });
 
 dumpBtn.onclick = () => {
-  sandVal = parseInt(sandInput.value);
-  //console.log(sandInput.value, sandVal);
+  sandInputVal = parseInt(sandInput.value);
+  //console.log(sandInput.value, sandInputVal);
   pause && populate();
 };
 
-const controlsDiv = document.querySelector(".controls-div");
 controlsDiv.addEventListener("change", (e) => {
   if (e.target === sandInput) {
     dumpBtn.value = `Pour ${sandpile.value} grains on your selected spots (only when paused)`;
@@ -620,24 +364,18 @@ pauseBtn.addEventListener("click", (e) => {
   }
 });
 
-const spreadSlider = document.querySelector("#spread-slider");
-spreadSlider.setAttribute("max", width / 4);
-let spreadVal = spreadSlider.value;
 spreadSlider.addEventListener("mousemove", () => {
   spreadVal = spreadSlider.value;
 });
 
-const reset = document.querySelector("#reset");
 reset.addEventListener("click", () => {
-  for (let i = 0; i < equivPixelArr.length; i++) {
-    equivPixelArr[i] = 0;
-    nextPixelArr[i] = 0;
-    seedArrIndexes = []; // highly experimental - trying to clear indexes here instead of in populate. May have fixed things
+  for (let i = 0; i < cellArr.length; i++) {
+    cellArr[i] = 0;
+    nextCellArr[i] = 0;
+    seedCellIndexes = []; // highly experimental - trying to clear indexes here instead of in populate. May have fixed things
   }
   ctx.clearRect(0, 0, width, height);
 });
-
-const freeChkbx = document.querySelector("#free");
 
 uiCanvas.addEventListener("click", (e) => {
   // Can't click on the sandpile canvas for some reason. Doesn't matter, still works
@@ -646,30 +384,271 @@ uiCanvas.addEventListener("click", (e) => {
   mouseY = e.clientY + window.scrollY - canvas.offsetTop;
 
   if (freeChkbx.checked) {
-    seedPixelIndex = mouseX + mouseY * width;
-    seedArrIndexes.push(seedPixelIndex);
-    equivPixelArr[seedPixelIndex] = parseInt(sandVal);
-    seedArrVal.push(equivPixelArr[seedPixelIndex]);
+    seedCellIndex = mouseX + mouseY * width;
+    seedCellIndexes.push(seedCellIndex);
+    cellArr[seedCellIndex] = parseInt(sandInputVal);
+    seedCellValues.push(cellArr[seedCellIndex]);
   }
 
-  //console.log(backedUpSand);
-  backedUpSand = equivPixelArr[seedPixelIndex];
-  //console.log(backedUpSand);
+  //console.log(sandRemaining);
+  sandRemaining = cellArr[seedCellIndex];
+  //console.log(sandRemaining);
 
-  for (let i = 0; i < seedArrIndexes.length; i++) {
+  for (let i = 0; i < seedCellIndexes.length; i++) {
     // this is attempt to fix bug
-    if (seedArrIndexes[i] !== seedPixelIndex) {
-      //backedUpSand += equivPixelArr[seedPixelIndex]; // keep this
-      backedUpSand += equivPixelArr[seedArrIndexes[i]]; // this is alternative to above, seems to be working
-      //console.log(backedUpSand, equivPixelArr[seedPixelIndex]);
+    if (seedCellIndexes[i] !== seedCellIndex) {
+      //sandRemaining += cellArr[seedCellIndex]; // keep this
+      sandRemaining += cellArr[seedCellIndexes[i]]; // this is alternative to above, seems to be working
+      //console.log(sandRemaining, cellArr[seedCellIndex]);
     }
   }
-  backedUpSandCounter.textContent = parseInt(backedUpSand);
-  //console.log(backedUpSandCounter.textContent);
-  seedArrVal = [];
+  sandRemainingCounter.textContent = parseInt(sandRemaining);
+  //console.log(sandRemainingCounter.textContent);
+  seedCellValues = [];
 });
 
-/** ===================== OPTIONS ===================== */
+rightEdge(cellArr, width);
+leftEdge(cellArr, width);
+
+function update() {
+  nextCellArr = new Array(pixelData.data.length / 4);
+  for (let i = 0; i < nextCellArr.length; i++) {
+    nextCellArr[i] = 0;
+  }
+
+  // Copy every cell that won't topple to next step's array
+  for (let i = 0; i < cellArr.length; i++) {
+    if (cellArr[i] < 4) {
+      nextCellArr[i] = cellArr[i];
+    }
+  }
+
+  for (let i = 0; i < cellArr.length; i++) {
+    if (cellArr[i] > 3) {
+      topple(i);
+    }
+  }
+
+  cellArr = nextCellArr;
+}
+
+function drawUi() {
+  ctxUi.clearRect(0, 0, width, height);
+  requestAnimationFrame(drawUi);
+}
+
+drawUi();
+
+drawGuidelines();
+
+function draw() {
+  updateSandRemaining();
+  sandRemainingCounter.textContent = sandRemaining;
+  if (pause === false) {
+    for (let i = 0; i < timestepInput.value; i++) {
+      update();
+    }
+    paintEverything();
+
+    pHInput.value >= 6000 && rotateHue(pHInput.value);
+
+    requestAnimationFrame(draw);
+  }
+}
+
+/** ===================== OTHER FUNCTIONS ===================== */
+
+function rightEdge(arr, width) {
+  for (let i = 0; i <= arr.length; i += width) {
+    i > 0 && rightEdgeArr.push(i - 1);
+  }
+}
+
+function leftEdge(arr, width) {
+  for (let i = 0; i <= arr.length; i += width) {
+    i > 0 && leftEdgeArr.push(i);
+  }
+}
+
+function topple(currentIndex) {
+  nextCellArr[currentIndex] += cellArr[currentIndex] - 4;
+
+  !(currentIndex < width) && toppleUp(currentIndex - width);
+  !rightEdgeArr.includes(currentIndex) && toppleRight(currentIndex + 1);
+  !(currentIndex > nextCellArr.length - width) &&
+    toppleDown(currentIndex + width);
+  !leftEdgeArr.includes(currentIndex) && toppleLeft(currentIndex - 1);
+}
+
+function toppleUp(currentIndex) {
+  nextCellArr[currentIndex]++;
+}
+function toppleRight(currentIndex) {
+  nextCellArr[currentIndex]++;
+}
+function toppleDown(currentIndex) {
+  nextCellArr[currentIndex]++;
+}
+function toppleLeft(currentIndex) {
+  nextCellArr[currentIndex]++;
+}
+
+function updateSandRemaining() {
+  if (sandRemaining > 0) {
+    sandRemaining = 0;
+    for (let i = 0; i < seedCellIndexes.length; i++) {
+      //console.log(sandRemaining, seedCellIndexes);
+
+      sandRemaining += cellArr[seedCellIndexes[i]]; // experimental
+
+      //console.log(sandRemaining, seedCellIndexes);
+    }
+    //console.log(sandRemaining);
+
+    //console.log(seedCellIndex);
+
+    if (seedCellIndexes.length === 0) {
+      // This is the mouse click index.
+      seedCellIndexes.push(seedCellIndex);
+    }
+    //console.log(sandRemaining, seedCellIndexes);
+  }
+}
+
+function populate() {
+  // seedCellIndexes = []; // HIGHLY EXPERIMENTAL - trying to clear when reset. May have fixed things
+
+  if (centerChkbx.checked) {
+    const index = width / 2 + (height / 2) * width;
+
+    cellArr[index] = parseInt(sandInputVal);
+
+    seedCellValues.push(cellArr[index]);
+    seedCellIndexes.push(index);
+  }
+
+  if (twoChkbx.checked) {
+    const indexXRight =
+      centerStartPoint.x + spreadVal * Math.cos(degToRad(-rotateVal));
+    const indexYRight =
+      centerStartPoint.y + spreadVal * Math.sin(degToRad(-rotateVal));
+
+    const indexRight =
+      Math.round(indexXRight) + Math.round(indexYRight) * width;
+
+    cellArr[indexRight] = parseInt(sandInputVal);
+
+    seedCellValues.push(cellArr[indexRight]);
+    seedCellIndexes.push(indexRight);
+
+    const indexXLeft =
+      centerStartPoint.x - spreadVal * Math.cos(degToRad(-rotateVal));
+    const indexYLeft =
+      centerStartPoint.y - spreadVal * Math.sin(degToRad(-rotateVal));
+
+    const indexLeft = Math.round(indexXLeft) + Math.round(indexYLeft) * width;
+
+    cellArr[indexLeft] = parseInt(sandInputVal);
+
+    seedCellValues.push(cellArr[indexLeft]);
+    seedCellIndexes.push(indexLeft);
+  }
+
+  if (twoVertChkbx.checked) {
+    const indexXTop =
+      centerStartPoint.x + spreadVal * Math.cos(degToRad(-rotateVal - 90));
+    const indexYTop =
+      centerStartPoint.y + spreadVal * Math.sin(degToRad(-rotateVal - 90));
+
+    const indexTop = Math.round(indexXTop) + Math.round(indexYTop) * width;
+
+    cellArr[indexTop] = parseInt(sandInputVal);
+
+    seedCellValues.push(cellArr[indexTop]);
+    seedCellIndexes.push(indexTop);
+
+    const indexXBottom =
+      centerStartPoint.x - spreadVal * Math.cos(degToRad(-rotateVal - 90));
+    const indexYBottom =
+      centerStartPoint.y - spreadVal * Math.sin(degToRad(-rotateVal - 90));
+
+    const indexBottom =
+      Math.round(indexXBottom) + Math.round(indexYBottom) * width;
+
+    cellArr[indexBottom] = parseInt(sandInputVal);
+
+    seedCellValues.push(cellArr[indexBottom]);
+    seedCellIndexes.push(indexBottom);
+  }
+
+  if (fourChkbx.checked) {
+    let h = Math.sqrt(Math.pow(spreadVal, 2) + Math.pow(spreadVal, 2));
+
+    const xRightTop =
+      centerStartPoint.x + h * Math.cos(degToRad(-rotateVal - 45));
+    const yRightTop =
+      centerStartPoint.y + h * Math.sin(degToRad(-rotateVal - 45));
+
+    const indexRightTop = Math.round(xRightTop) + Math.round(yRightTop) * width;
+
+    cellArr[indexRightTop] = parseInt(sandInputVal);
+
+    seedCellValues.push(cellArr[indexRightTop]);
+    seedCellIndexes.push(indexRightTop);
+
+    const indexXRightBottom =
+      centerStartPoint.x + h * Math.cos(degToRad(-rotateVal + 45));
+    const indexYRightBottom =
+      centerStartPoint.y + h * Math.sin(degToRad(-rotateVal + 45));
+
+    const indexRightBottom =
+      Math.round(indexXRightBottom) + Math.round(indexYRightBottom) * width;
+
+    cellArr[indexRightBottom] = parseInt(sandInputVal);
+
+    seedCellValues.push(cellArr[indexRightBottom]);
+    seedCellIndexes.push(indexRightBottom);
+
+    const xLeftBottom =
+      centerStartPoint.x + h * Math.cos(degToRad(-rotateVal + 135));
+    const yLeftBottom =
+      centerStartPoint.y + h * Math.sin(degToRad(-rotateVal + 135));
+
+    const indexLeftBottom =
+      Math.round(xLeftBottom) + Math.round(yLeftBottom) * width;
+    cellArr[indexLeftBottom] = parseInt(sandInputVal);
+
+    seedCellValues.push(cellArr[indexLeftBottom]);
+    seedCellIndexes.push(indexLeftBottom);
+
+    const xLeftTop =
+      centerStartPoint.x + h * Math.cos(degToRad(-rotateVal + 225));
+    const yLeftTop =
+      centerStartPoint.y + h * Math.sin(degToRad(-rotateVal + 225));
+
+    const indexLeftTop = Math.round(xLeftTop) + Math.round(yLeftTop) * width;
+    cellArr[indexLeftTop] = parseInt(sandInputVal);
+    //console.log(cellArr[indexLeftTop]);
+    //console.log("SandVal = " + sandInputVal);
+
+    seedCellValues.push(cellArr[indexLeftTop]);
+    seedCellIndexes.push(indexLeftTop);
+  }
+
+  // Add all seed inexes' sand amount together and add the total to the total backed up sand
+
+  for (let i = 0; i < seedCellValues.length; i++) {
+    if (seedCellValues[i] !== undefined) {
+      sandRemaining = seedCellValues[i];
+      //console.log(seedCellValues[i], sandRemaining);
+    }
+  }
+  //console.log(sandRemaining);
+  sandRemainingCounter.textContent = parseInt(sandRemaining);
+  seedCellValues = [];
+}
+
+/** ===================== UI FUNCTIONS ===================== */
 
 class Vector {
   constructor(x, y, mag) {
@@ -755,8 +734,6 @@ function drawCenterPoint() {
 }
 
 // Draw right and left points
-
-let twoChkbx = document.querySelector("#two");
 
 function drawRightPoint() {
   ctxUi.beginPath();
@@ -1040,108 +1017,27 @@ function drawRect1(index) {
 }
 
 function paint(index) {
-  if (equivPixelArr[index] > 3) {
+  if (cellArr[index] > 3) {
     drawRectFull(index);
   }
-  if (equivPixelArr[index] === 3) {
+  if (cellArr[index] === 3) {
     drawRect3(index);
   }
-  if (equivPixelArr[index] === 2) {
+  if (cellArr[index] === 2) {
     drawRect2(index);
   }
-  if (equivPixelArr[index] === 1) {
+  if (cellArr[index] === 1) {
     drawRect1(index);
   }
 }
 
-function toppleUp(currentIndex) {
-  nextPixelArr[currentIndex]++;
-}
-function toppleRight(currentIndex) {
-  nextPixelArr[currentIndex]++;
-}
-function toppleDown(currentIndex) {
-  nextPixelArr[currentIndex]++;
-}
-function toppleLeft(currentIndex) {
-  nextPixelArr[currentIndex]++;
-}
-
-function topple(currentIndex) {
-  nextPixelArr[currentIndex] += equivPixelArr[currentIndex] - 4;
-
-  !(currentIndex < width) && toppleUp(currentIndex - width);
-  !rightEdgeArr.includes(currentIndex) && toppleRight(currentIndex + 1);
-  !(currentIndex > nextPixelArr.length - width) &&
-    toppleDown(currentIndex + width);
-  !leftEdgeArr.includes(currentIndex) && toppleLeft(currentIndex - 1);
-}
-
-let rightEdgeArr = [];
-let leftEdgeArr = [];
-
-function rightEdge(arr, width) {
-  for (let i = 0; i <= arr.length; i += width) {
-    i > 0 && rightEdgeArr.push(i - 1);
-  }
-}
-
-function leftEdge(arr, width) {
-  for (let i = 0; i <= arr.length; i += width) {
-    i > 0 && leftEdgeArr.push(i);
-  }
-}
-
-const pixelData = ctx.getImageData(0, 0, width, height);
-
-let equivPixelArr = new Array(pixelData.data.length / 4);
-let nextPixelArr = new Array(pixelData.data.length / 4);
-for (let i = 0; i < nextPixelArr.length; i++) {
-  nextPixelArr[i] = 0;
-}
-
-// Loop through image pixels, skipping green, blue, and alpha indices;
-for (let i = 0; i < pixelData.data.length; i += 4) {
-  equivPixelArr[i / 4] = 0; // Equivalent index for the straight array
-}
-
-rightEdge(equivPixelArr, width);
-leftEdge(equivPixelArr, width);
-
-let mouseX = 0;
-let mouseY = 0;
-
-let seedPixelIndex = 0;
-
-function update() {
-  nextPixelArr = new Array(pixelData.data.length / 4);
-  for (let i = 0; i < nextPixelArr.length; i++) {
-    nextPixelArr[i] = 0;
-  }
-
-  // Copy every cell that won't topple to next step's array
-  for (let i = 0; i < equivPixelArr.length; i++) {
-    if (equivPixelArr[i] < 4) {
-      nextPixelArr[i] = equivPixelArr[i];
-    }
-  }
-
-  for (let i = 0; i < equivPixelArr.length; i++) {
-    if (equivPixelArr[i] > 3) {
-      topple(i);
-    }
-  }
-
-  equivPixelArr = nextPixelArr;
-}
-
 function paintEverything() {
-  for (let i = 0; i < equivPixelArr.length; i++) {
-    equivPixelArr[i] > 0 && paint(i);
+  for (let i = 0; i < cellArr.length; i++) {
+    cellArr[i] > 0 && paint(i);
   }
 }
 
-const drawGuidelines = () => {
+function drawGuidelines() {
   ctxUi.clearRect(0, 0, width, height);
   if (centerChkbx.checked) {
     drawCenterPoint();
@@ -1178,8 +1074,97 @@ const drawGuidelines = () => {
   if (showGuidelines.checked && pause === true) {
     requestAnimationFrame(drawGuidelines);
   }
-};
-drawGuidelines();
+}
+
+let bgPhAngle = 0;
+let sliderPhAngle = 0;
+let cellPhAngle = 0;
+
+function rotateHue(pHLevel) {
+  let numPh = parseInt(pHLevel);
+  if (pHLevel === "9001") {
+    bgPhAngle += 5;
+    sliderPhAngle += 0.1;
+
+    bg.style.webkitFilter = "hue-rotate(" + bgPhAngle + "deg)";
+    bg.style.filter = "hue-rotate(" + bgPhAngle + "deg)";
+
+    colorSlider1.value = ((Math.sin(sliderPhAngle * 0.58) + 1) / 2) * 360;
+    colorSlider2.value = ((Math.sin(sliderPhAngle * 0.36) + 1) / 2) * 360;
+    colorSlider3.value = ((Math.sin(sliderPhAngle * 0.73) + 1) / 2) * 360;
+    colorSlider4.value = ((Math.sin(sliderPhAngle * 0.64) + 1) / 2) * 360;
+
+    cellColor1.style.background =
+      "hsl(" + colorSlider1.value.toString() + ", 50%, 50%)";
+    cellColor2.style.background =
+      "hsl(" + colorSlider2.value.toString() + ", 50%, 50%)";
+    cellColor3.style.background =
+      "hsl(" + colorSlider3.value.toString() + ", 50%, 50%)";
+    cellColor4.style.background =
+      "hsl(" + colorSlider4.value.toString() + ", 50%, 50%)";
+
+    cellPhAngle += 2;
+    if (cellPhAngle > 360) {
+      cellPhAngle = 0;
+    }
+
+    let newColor1Hue = Math.round(cellPhAngle) + 90;
+    if (newColor1Hue > 360) {
+      newColor1Hue -= 360;
+    }
+    let newColor2Hue = Math.round(cellPhAngle) + 180;
+    if (newColor2Hue > 360) {
+      newColor2Hue -= 360;
+    }
+    let newColor3Hue = Math.round(cellPhAngle) + 270;
+    if (newColor3Hue > 360) {
+      newColor3Hue -= 360;
+    }
+    let newColor4Hue = Math.round(cellPhAngle) + 360;
+    if (newColor4Hue > 360) {
+      newColor4Hue -= 360;
+    }
+
+    color1 = "hsl(" + newColor1Hue.toString() + ", 50%, 50%)";
+    color2 = "hsl(" + newColor2Hue.toString() + ", 50%, 50%)";
+    color3 = "hsl(" + newColor3Hue.toString() + ", 50%, 50%)";
+    color4 = "hsl(" + newColor4Hue.toString() + ", 50%, 50%)";
+  } else if (numPh >= 6000 && numPh < 9001) {
+    cellPhAngle += 2;
+    if (cellPhAngle > 360) {
+      cellPhAngle = 0;
+    }
+
+    let newColor1Hue = Math.round(cellPhAngle) + 90;
+    if (newColor1Hue > 360) {
+      newColor1Hue -= 360;
+    }
+    let newColor2Hue = Math.round(cellPhAngle) + 180;
+    if (newColor2Hue > 360) {
+      newColor2Hue -= 360;
+    }
+    let newColor3Hue = Math.round(cellPhAngle) + 270;
+    if (newColor3Hue > 360) {
+      newColor3Hue -= 360;
+    }
+    let newColor4Hue = Math.round(cellPhAngle) + 360;
+    if (newColor4Hue > 360) {
+      newColor4Hue -= 360;
+    }
+
+    color1 = "hsl(" + newColor1Hue.toString() + ", 50%, 50%)";
+    color2 = "hsl(" + newColor2Hue.toString() + ", 50%, 50%)";
+    color3 = "hsl(" + newColor3Hue.toString() + ", 50%, 50%)";
+    color4 = "hsl(" + newColor4Hue.toString() + ", 50%, 50%)";
+  }
+
+  if (bgPhAngle == 360) {
+    bgPhAngle = 0;
+  }
+  if (sliderPhAngle == 360) {
+    sliderPhAngle = 0;
+  }
+}
 
 function convertRange(
   oldValue,
@@ -1193,21 +1178,4 @@ function convertRange(
   let newValue = ((oldValue - oldRangeMin) * newRange) / oldRange + newRangeMin;
 
   return newValue;
-}
-
-let backedUpSandFallBack = 0;
-
-function draw() {
-  updateBackedUpSand();
-  backedUpSandCounter.textContent = backedUpSand;
-  if (pause === false) {
-    for (let i = 0; i < timestepInput.value; i++) {
-      update();
-    }
-    paintEverything();
-
-    pHInput.value >= 6000 && rotateHue(pHInput.value);
-
-    requestAnimationFrame(draw);
-  }
 }
