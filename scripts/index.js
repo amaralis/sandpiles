@@ -106,36 +106,21 @@ const updateBackedUpSand = function () {
   if (backedUpSand > 0) {
     backedUpSand = 0;
     for (let i = 0; i < seedArrIndexes.length; i++) {
-      console.log(backedUpSand, seedArrIndexes);
-
-      // if (seedArrIndexes.length > 1) { // keep this, just in case, delete next line
-      //   console.log(backedUpSand, equivPixelArr[seedArrIndexes[i]]);
-
-      //   //backedUpSand = equivPixelArr[seedArrIndexes[i]]; // keep this, but I think the alternative might have fixed the free placement bug
-      //   backedUpSand += equivPixelArr[seedArrIndexes[i]];
-
-      //   console.log(backedUpSand, equivPixelArr[seedArrIndexes[i]]);
-      // } else {
-      //   console.log(backedUpSand, equivPixelArr[seedArrIndexes[i]]);
-
-      //   backedUpSand = equivPixelArr[seedArrIndexes[i]];
-
-      //   console.log(backedUpSand, equivPixelArr[seedArrIndexes[i]]);
-      // }
+      //console.log(backedUpSand, seedArrIndexes);
 
       backedUpSand += equivPixelArr[seedArrIndexes[i]]; // experimental
 
-      console.log(backedUpSand, seedArrIndexes);
+      //console.log(backedUpSand, seedArrIndexes);
     }
-    console.log(backedUpSand);
+    //console.log(backedUpSand);
 
-    console.log(seedPixelIndex);
+    //console.log(seedPixelIndex);
 
     if (seedArrIndexes.length === 0) {
       // This is the mouse click index.
       seedArrIndexes.push(seedPixelIndex);
     }
-    console.log(backedUpSand, seedArrIndexes);
+    //console.log(backedUpSand, seedArrIndexes);
   }
 };
 
@@ -252,8 +237,8 @@ function populate() {
 
     const indexLeftTop = Math.round(xLeftTop) + Math.round(yLeftTop) * width;
     equivPixelArr[indexLeftTop] = parseInt(sandVal);
-    console.log(equivPixelArr[indexLeftTop]);
-    console.log("SandVal = " + sandVal);
+    //console.log(equivPixelArr[indexLeftTop]);
+    //console.log("SandVal = " + sandVal);
 
     seedArrVal.push(equivPixelArr[indexLeftTop]);
     seedArrIndexes.push(indexLeftTop);
@@ -264,10 +249,10 @@ function populate() {
   for (let i = 0; i < seedArrVal.length; i++) {
     if (seedArrVal[i] !== undefined) {
       backedUpSand = seedArrVal[i];
-      console.log(seedArrVal[i], backedUpSand);
+      //console.log(seedArrVal[i], backedUpSand);
     }
   }
-  console.log(backedUpSand);
+  //console.log(backedUpSand);
   backedUpSandCounter.textContent = parseInt(backedUpSand);
   seedArrVal = [];
 }
@@ -284,7 +269,7 @@ bottomDiv.addEventListener("mouseup", (e) => {
   const { target } = e;
   if (target === pHInput && pHInput.value > 5999 && !audio.muted) {
     async function playAudio() {
-      console.log("playing");
+      // console.log("playing");
       try {
         const res = await audio.play();
         audio.muted = false;
@@ -304,7 +289,7 @@ bottomDiv.addEventListener("mouseup", (e) => {
 bottomDiv.addEventListener("keydown", (e) => {
   const { target } = e;
 
-  console.log(pHInput.value);
+  //console.log(pHInput.value);
 
   if (target === pHInput) {
     if (target.value === "9001") {
@@ -324,7 +309,7 @@ bottomDiv.addEventListener("keydown", (e) => {
 
   if (target === pHInput && pHInput.value > 5999 && !audio.muted) {
     async function playAudio() {
-      console.log("playing");
+      //console.log("playing");
       try {
         const res = await audio.play();
         audio.muted = false;
@@ -603,12 +588,12 @@ let sandVal = 0;
 sandInput.addEventListener("change", () => {
   sandInput.setAttribute("value", sandInput.value);
   sandVal = parseInt(sandInput.value);
-  console.log(backedUpSand, sandVal);
+  //console.log(backedUpSand, sandVal);
 });
 
 dumpBtn.onclick = () => {
   sandVal = parseInt(sandInput.value);
-  console.log(sandInput.value, sandVal);
+  //console.log(sandInput.value, sandVal);
   pause && populate();
 };
 
@@ -667,20 +652,20 @@ uiCanvas.addEventListener("click", (e) => {
     seedArrVal.push(equivPixelArr[seedPixelIndex]);
   }
 
-  console.log(backedUpSand);
+  //console.log(backedUpSand);
   backedUpSand = equivPixelArr[seedPixelIndex];
-  console.log(backedUpSand);
+  //console.log(backedUpSand);
 
   for (let i = 0; i < seedArrIndexes.length; i++) {
     // this is attempt to fix bug
     if (seedArrIndexes[i] !== seedPixelIndex) {
       //backedUpSand += equivPixelArr[seedPixelIndex]; // keep this
       backedUpSand += equivPixelArr[seedArrIndexes[i]]; // this is alternative to above, seems to be working
-      console.log(backedUpSand, equivPixelArr[seedPixelIndex]);
+      //console.log(backedUpSand, equivPixelArr[seedPixelIndex]);
     }
   }
   backedUpSandCounter.textContent = parseInt(backedUpSand);
-  console.log(backedUpSandCounter.textContent);
+  //console.log(backedUpSandCounter.textContent);
   seedArrVal = [];
 });
 
