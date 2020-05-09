@@ -15,7 +15,6 @@ const sandRemainingCounter = document.querySelector("#sand-left-counter");
 const dumpBtn = document.querySelector("#dump");
 const controlsDiv = document.querySelector(".controls-div");
 const spreadSlider = document.querySelector("#spread-slider");
-spreadSlider.setAttribute("max", width / 4);
 const reset = document.querySelector("#reset");
 const freeChkbx = document.querySelector("#free");
 const timestepInput = document.querySelector("#timestep-slider");
@@ -28,11 +27,11 @@ const colorSlider1 = document.querySelector("#one-grain");
 const colorSlider2 = document.querySelector("#two-grains");
 const colorSlider3 = document.querySelector("#three-grains");
 const colorSlider4 = document.querySelector("#four-grains");
+const canvas = document.getElementById("sandpile-canvas");
 const ctx = canvas.getContext("2d");
 const ctxUi = uiCanvas.getContext("2d");
 const bg = document.querySelector("#bg");
 const bgDiv = document.getElementById("bg-div");
-const canvas = document.getElementById("sandpile-canvas");
 const audio = document.querySelector("#sandstorm");
 const rotateSlider = document.querySelector("#rotate-slider");
 const centerChkbx = document.querySelector("#center");
@@ -42,6 +41,7 @@ const fourChkbx = document.querySelector("#four");
 // VARIABLES
 
 let spreadVal = spreadSlider.value;
+let rotateVal = rotateSlider.value;
 const width = canvas.width;
 const height = canvas.height;
 let sandRemaining = 0;
@@ -58,7 +58,10 @@ let color4 = "#3F9F7E";
 // let color2 = "hsl(" + colorSlider2.value.toString() + ", 50%, 50%)";
 // let color3 = "hsl(" + colorSlider3.value.toString() + ", 50%, 50%)";
 // let color4 = "hsl(" + colorSlider4.value.toString() + ", 50%, 50%)";
-let rotateVal = rotateSlider.value;
+let circleAngles = 0;
+let circleWidths = Math.cos(circleAngles);
+let centerStrokeStyle = "rgba(255,255,255,1)";
+let centerPointStrokeStyle = "rgba(190,0,0)";
 
 // INITIALIZERS
 
@@ -92,6 +95,7 @@ let heightStr = canvas.width.toString() + "px";
 let wrapperWidthStr = (canvas.width + 4).toString() + "px";
 let wrapperHeightStr = (canvas.width + 4).toString() + "px";
 
+spreadSlider.setAttribute("max", width / 4);
 uiCanvas.style.position = "absolute";
 canvas.style.position = "absolute";
 bg.style.position = "absolute";
@@ -419,55 +423,6 @@ rotateSlider.addEventListener("mousemove", () => {
   rotateVal = rotateSlider.value;
 });
 
-rightEdge(cellArr, width);
-leftEdge(cellArr, width);
-
-function update() {
-  nextCellArr = new Array(pixelData.data.length / 4);
-  for (let i = 0; i < nextCellArr.length; i++) {
-    nextCellArr[i] = 0;
-  }
-
-  // Copy every cell that won't topple to next step's array
-  for (let i = 0; i < cellArr.length; i++) {
-    if (cellArr[i] < 4) {
-      nextCellArr[i] = cellArr[i];
-    }
-  }
-
-  for (let i = 0; i < cellArr.length; i++) {
-    if (cellArr[i] > 3) {
-      topple(i);
-    }
-  }
-
-  cellArr = nextCellArr;
-}
-
-function drawUi() {
-  ctxUi.clearRect(0, 0, width, height);
-  requestAnimationFrame(drawUi);
-}
-
-drawUi();
-
-drawGuidelines();
-
-function draw() {
-  updateSandRemaining();
-  sandRemainingCounter.textContent = sandRemaining;
-  if (pause === false) {
-    for (let i = 0; i < timestepInput.value; i++) {
-      update();
-    }
-    paintEverything();
-
-    pHInput.value >= 6000 && rotateHue(pHInput.value);
-
-    requestAnimationFrame(draw);
-  }
-}
-
 /** ===================== OTHER FUNCTIONS ===================== */
 
 function rightEdge(arr, width) {
@@ -672,6 +627,12 @@ class Vector {
     Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
   };
 }
+const centerStartPoint = new Vector(width / 2, height / 2, undefined);
+const centerLineRight = new Vector(
+  centerStartPoint.x,
+  centerStartPoint.y,
+  width
+);
 
 // Rotation maths stuff
 
@@ -680,15 +641,6 @@ const degToRad = function (deg) {
 };
 
 // Drop sand in center
-
-let circleAngles = 0;
-let circleWidths = Math.cos(circleAngles);
-
-const centerStartPoint = new Vector(width / 2, height / 2, undefined);
-let centerLineRight = new Vector(centerStartPoint.x, centerStartPoint.y, width);
-
-let centerStrokeStyle = "rgba(255,255,255,1)";
-let centerPointStrokeStyle = "rgba(190,0,0)";
 
 // Draw center line
 
@@ -1151,4 +1103,54 @@ function convertRange(
   let newValue = ((oldValue - oldRangeMin) * newRange) / oldRange + newRangeMin;
 
   return newValue;
+}
+
+/** ===================== MAIN ===================== */
+
+rightEdge(cellArr, width);
+leftEdge(cellArr, width);
+
+function update() {
+  nextCellArr = new Array(pixelData.data.length / 4);
+  for (let i = 0; i < nextCellArr.length; i++) {
+    nextCellArr[i] = 0;
+  }
+
+  // Copy every cell that won't topple to next step's array
+  for (let i = 0; i < cellArr.length; i++) {
+    if (cellArr[i] < 4) {
+      nextCellArr[i] = cellArr[i];
+    }
+  }
+
+  for (let i = 0; i < cellArr.length; i++) {
+    if (cellArr[i] > 3) {
+      topple(i);
+    }
+  }
+
+  cellArr = nextCellArr;
+}
+
+function drawUi() {
+  ctxUi.clearRect(0, 0, width, height);
+  requestAnimationFrame(drawUi);
+}
+
+drawUi();
+drawGuidelines();
+
+function draw() {
+  updateSandRemaining();
+  sandRemainingCounter.textContent = sandRemaining;
+  if (pause === false) {
+    for (let i = 0; i < timestepInput.value; i++) {
+      update();
+    }
+    paintEverything();
+
+    pHInput.value >= 6000 && rotateHue(pHInput.value);
+
+    requestAnimationFrame(draw);
+  }
 }
