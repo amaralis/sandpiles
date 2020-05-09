@@ -34,8 +34,12 @@ const bg = document.querySelector("#bg");
 const bgDiv = document.getElementById("bg-div");
 const canvas = document.getElementById("sandpile-canvas");
 const audio = document.querySelector("#sandstorm");
+const rotateSlider = document.querySelector("#rotate-slider");
+const centerChkbx = document.querySelector("#center");
+const twoVertChkbx = document.querySelector("#two-vertical");
+const fourChkbx = document.querySelector("#four");
 
-// INITIALIZERS
+// VARIABLES
 
 let spreadVal = spreadSlider.value;
 const width = canvas.width;
@@ -54,6 +58,7 @@ let color4 = "#3F9F7E";
 // let color2 = "hsl(" + colorSlider2.value.toString() + ", 50%, 50%)";
 // let color3 = "hsl(" + colorSlider3.value.toString() + ", 50%, 50%)";
 // let color4 = "hsl(" + colorSlider4.value.toString() + ", 50%, 50%)";
+let rotateVal = rotateSlider.value;
 
 // INITIALIZERS
 
@@ -64,6 +69,9 @@ let seedCellIndexes = [];
 let seedCellValues = [];
 let rightEdgeArr = [];
 let leftEdgeArr = [];
+let bgPhAngle = 0;
+let sliderPhAngle = 0;
+let cellPhAngle = 0;
 
 document.getElementById("place-free").style.backgroundImage = "none";
 document.getElementById("place-two").style.backgroundImage = "none";
@@ -407,6 +415,10 @@ uiCanvas.addEventListener("click", (e) => {
   seedCellValues = [];
 });
 
+rotateSlider.addEventListener("mousemove", () => {
+  rotateVal = rotateSlider.value;
+});
+
 rightEdge(cellArr, width);
 leftEdge(cellArr, width);
 
@@ -648,7 +660,7 @@ function populate() {
   seedCellValues = [];
 }
 
-/** ===================== UI FUNCTIONS ===================== */
+/** ===================== UI ===================== */
 
 class Vector {
   constructor(x, y, mag) {
@@ -667,20 +679,7 @@ const degToRad = function (deg) {
   return (deg * Math.PI) / 180;
 };
 
-const getHyp = function (x, y) {
-  triHyp = Math.sqrt(Math.pow(triX, 2) + Math.pow(triY, 2));
-  return triHyp;
-};
-
-// Rotate controls
-const rotateSlider = document.querySelector("#rotate-slider");
-let rotateVal = rotateSlider.value;
-rotateSlider.addEventListener("mousemove", () => {
-  rotateVal = rotateSlider.value;
-});
-
 // Drop sand in center
-const centerChkbx = document.querySelector("#center");
 
 let circleAngles = 0;
 let circleWidths = Math.cos(circleAngles);
@@ -794,7 +793,6 @@ function drawCrossLine() {
 }
 
 // Draw vertical points
-const twoVertChkbx = document.querySelector("#two-vertical");
 
 function drawTopPoint() {
   ctxUi.beginPath();
@@ -830,26 +828,6 @@ function drawBottomPoint() {
 }
 
 // Draw four points and lines
-const upperRight = new Vector(
-  centerStartPoint.x + spreadVal,
-  centerStartPoint.y - spreadVal,
-  spreadVal
-);
-const bottomRight = new Vector(
-  centerStartPoint.x + spreadVal,
-  centerStartPoint.y + spreadVal,
-  spreadVal
-);
-const bottomLeft = new Vector(
-  centerStartPoint.x - spreadVal,
-  centerStartPoint.y + spreadVal,
-  spreadVal
-);
-const upperLeft = new Vector(
-  centerStartPoint.x - spreadVal,
-  centerStartPoint.y - spreadVal,
-  spreadVal
-);
 
 function drawDiagLine1() {
   ctxUi.beginPath();
@@ -905,7 +883,6 @@ function drawDiagLine4() {
 }
 
 // Draw four points
-const fourChkbx = document.querySelector("#four");
 
 function drawRightUpper() {
   let h = Math.sqrt(Math.pow(spreadVal, 2) + Math.pow(spreadVal, 2));
@@ -1075,10 +1052,6 @@ function drawGuidelines() {
     requestAnimationFrame(drawGuidelines);
   }
 }
-
-let bgPhAngle = 0;
-let sliderPhAngle = 0;
-let cellPhAngle = 0;
 
 function rotateHue(pHLevel) {
   let numPh = parseInt(pHLevel);
