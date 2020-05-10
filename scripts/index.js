@@ -206,7 +206,7 @@ bottomDiv.addEventListener("mousemove", (e) => {
 
   if (target === pHInput && pHInput.value > 5999 && !audio.muted) {
     async function playAudio() {
-      console.log("playing");
+      // console.log("playing");
       try {
         const res = await audio.play();
         audio.muted = false;
@@ -345,7 +345,7 @@ showGuidelines.addEventListener("click", () => {
 sandInput.addEventListener("change", () => {
   sandInput.setAttribute("value", sandInput.value);
   sandInputVal = parseInt(sandInput.value);
-  //console.log(sandRemaining, sandInputVal);
+  // console.log(sandRemaining, sandInputVal);
 });
 
 dumpBtn.onclick = () => {
@@ -396,26 +396,40 @@ uiCanvas.addEventListener("click", (e) => {
   mouseY = e.clientY + window.scrollY - canvas.offsetTop;
 
   if (freeChkbx.checked) {
+    // console.log(
+    //   seedCellIndex,
+    //   seedCellIndexes,
+    //   cellArr[seedCellIndex],
+    //   seedCellValues,
+    //   sandInputVal
+    // );
     seedCellIndex = mouseX + mouseY * width;
     seedCellIndexes.push(seedCellIndex);
     cellArr[seedCellIndex] = parseInt(sandInputVal);
     seedCellValues.push(cellArr[seedCellIndex]);
+    // console.log(
+    //   seedCellIndex,
+    //   seedCellIndexes,
+    //   cellArr[seedCellIndex],
+    //   seedCellValues,
+    //   sandInputVal
+    // );
   }
 
-  //console.log(sandRemaining);
+  // console.log(sandRemaining);
   sandRemaining = cellArr[seedCellIndex];
-  //console.log(sandRemaining);
+  // console.log(sandRemaining);
 
   for (let i = 0; i < seedCellIndexes.length; i++) {
     // this is attempt to fix bug
     if (seedCellIndexes[i] !== seedCellIndex) {
       //sandRemaining += cellArr[seedCellIndex]; // keep this
       sandRemaining += cellArr[seedCellIndexes[i]]; // this is alternative to above, seems to be working
-      //console.log(sandRemaining, cellArr[seedCellIndex]);
+      // console.log(sandRemaining, cellArr[seedCellIndex]);
     }
   }
   sandRemainingCounter.textContent = parseInt(sandRemaining);
-  //console.log(sandRemainingCounter.textContent);
+  // console.log(sandRemainingCounter.textContent);
   seedCellValues = [];
 });
 
@@ -464,21 +478,19 @@ function updateSandRemaining() {
   if (sandRemaining > 0) {
     sandRemaining = 0;
     for (let i = 0; i < seedCellIndexes.length; i++) {
-      //console.log(sandRemaining, seedCellIndexes);
+      // console.log(sandRemaining, seedCellIndexes);
 
       sandRemaining += cellArr[seedCellIndexes[i]]; // experimental
 
-      //console.log(sandRemaining, seedCellIndexes);
+      // console.log(sandRemaining, seedCellIndexes);
     }
-    //console.log(sandRemaining);
-
-    //console.log(seedCellIndex);
+    // console.log(sandRemaining, seedCellIndex);
 
     if (seedCellIndexes.length === 0) {
       // This is the mouse click index.
       seedCellIndexes.push(seedCellIndex);
     }
-    //console.log(sandRemaining, seedCellIndexes);
+    // console.log(sandRemaining, seedCellIndexes);
   }
 }
 
@@ -607,10 +619,10 @@ function populate() {
   for (let i = 0; i < seedCellValues.length; i++) {
     if (seedCellValues[i] !== undefined) {
       sandRemaining = seedCellValues[i];
-      //console.log(seedCellValues[i], sandRemaining);
+      // console.log(seedCellValues[i], sandRemaining);
     }
   }
-  //console.log(sandRemaining);
+  // console.log(sandRemaining);
   sandRemainingCounter.textContent = parseInt(sandRemaining);
   seedCellValues = [];
 }
