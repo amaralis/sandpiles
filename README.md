@@ -1,4 +1,4 @@
-# sandpiles
+# Sandpiles
 Interactive cellular automata model.
 
 ###The Abelian sandpile model is a dynamical system displaying self-organized criticality.
