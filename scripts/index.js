@@ -18,7 +18,7 @@ const spreadSlider = document.querySelector("#spread-slider");
 const reset = document.querySelector("#reset");
 const freeChkbx = document.querySelector("#free");
 const timestepInput = document.querySelector("#timestep-slider");
-const pauseBtn = document.querySelector("#pause-button");
+const pauseBtn = document.querySelector("#isPaused-button");
 const cellColor1 = document.querySelector("#cell-color-1");
 const cellColor2 = document.querySelector("#cell-color-2");
 const cellColor3 = document.querySelector("#cell-color-3");
@@ -49,7 +49,7 @@ let sandInputVal = 0;
 let mouseX = 0;
 let mouseY = 0;
 let seedCellIndex = 0;
-let pause = true;
+let isPaused = true;
 let color1 = "#92EDE3";
 let color2 = "#133964";
 let color3 = "#A4610D";
@@ -62,6 +62,7 @@ let circleAngles = 0;
 let circleWidths = Math.cos(circleAngles);
 let centerStrokeStyle = "rgba(255,255,255,1)";
 let centerPointStrokeStyle = "rgba(190,0,0)";
+let isPopulated = false;
 
 // INITIALIZERS
 
@@ -141,7 +142,7 @@ bottomDiv.addEventListener("mouseup", (e) => {
   }
 
   if (target === pHInput && pHInput.value < 6000) {
-    audio.pause();
+    audio.isPaused();
   }
 });
 
@@ -181,7 +182,7 @@ bottomDiv.addEventListener("keydown", (e) => {
   }
 
   if (target === pHInput && pHInput.value < 6000) {
-    audio.pause();
+    audio.isPaused();
   }
 });
 
@@ -219,7 +220,7 @@ bottomDiv.addEventListener("mousemove", (e) => {
   }
 
   if (target === pHInput && pHInput.value < 6000) {
-    audio.pause();
+    audio.isPaused();
   }
 
   if (target === colorSlider1) {
@@ -330,12 +331,12 @@ optionsDivRight.addEventListener("click", (e) => {
 });
 
 showGuidelines.addEventListener("click", () => {
-  if (showGuidelines.checked && pause) {
+  if (showGuidelines.checked && isPaused) {
     uiCanvas.style.zIndex = 5;
     canvas.style.zIndex = 4;
     drawGuidelines();
   }
-  if (!showGuidelines.checked && !pause) {
+  if (!showGuidelines.checked && !isPaused) {
     uiCanvas.style.zIndex = 4;
     canvas.style.zIndex = 5;
     draw();
@@ -350,8 +351,26 @@ sandInput.addEventListener("change", () => {
 
 dumpBtn.onclick = () => {
   sandInputVal = parseInt(sandInput.value);
-  //console.log(sandInput.value, sandInputVal);
-  pause && populate();
+  console.log(
+    sandInput.value,
+    sandInputVal,
+    seedCellValues,
+    seedCellIndexes,
+    seedCellIndex
+  );
+  //seedCellIndexes = [];
+  console.log(
+    sandInput.value,
+    sandInputVal,
+    seedCellValues,
+    seedCellIndexes,
+    seedCellIndex
+  );
+  if (!isPopulated && isPaused) {
+    console.log("Populating");
+    isPopulated = true;
+    populate();
+  }
 };
 
 controlsDiv.addEventListener("change", (e) => {
@@ -361,14 +380,16 @@ controlsDiv.addEventListener("change", (e) => {
 });
 
 pauseBtn.addEventListener("click", (e) => {
-  if (!pause) {
-    pause = true;
+  if (!isPaused) {
+    isPaused = true;
     pauseBtn.value = "Play simulation";
+    isPopulated = false;
     uiCanvas.style.zIndex = 5;
     canvas.style.zIndex = 4;
     showGuidelines.checked && drawGuidelines();
   } else {
-    pause = false;
+    isPaused = false;
+    isPopulated = true;
     canvas.style.zIndex = 4;
     uiCanvas.style.zIndex = 5;
     pauseBtn.value = "Pause simulation";
@@ -501,9 +522,9 @@ function populate() {
     const index = width / 2 + (height / 2) * width;
 
     cellArr[index] = parseInt(sandInputVal);
-
     seedCellValues.push(cellArr[index]);
-    seedCellIndexes.push(index);
+    !seedCellIndexes.includes(index) && seedCellIndexes.push(index);
+    // seedCellIndexes.push(index); // keep this
   }
 
   if (twoChkbx.checked) {
@@ -516,9 +537,9 @@ function populate() {
       Math.round(indexXRight) + Math.round(indexYRight) * width;
 
     cellArr[indexRight] = parseInt(sandInputVal);
-
     seedCellValues.push(cellArr[indexRight]);
-    seedCellIndexes.push(indexRight);
+    !seedCellIndexes.includes(indexRight) && seedCellIndexes.push(indexRight);
+    // seedCellIndexes.push(indexRight); // keep this
 
     const indexXLeft =
       centerStartPoint.x - spreadVal * Math.cos(degToRad(-rotateVal));
@@ -528,9 +549,9 @@ function populate() {
     const indexLeft = Math.round(indexXLeft) + Math.round(indexYLeft) * width;
 
     cellArr[indexLeft] = parseInt(sandInputVal);
-
     seedCellValues.push(cellArr[indexLeft]);
-    seedCellIndexes.push(indexLeft);
+    !seedCellIndexes.includes(indexLeft) && seedCellIndexes.push(indexLeft);
+    // seedCellIndexes.push(indexLeft); // keep this
   }
 
   if (twoVertChkbx.checked) {
@@ -542,9 +563,10 @@ function populate() {
     const indexTop = Math.round(indexXTop) + Math.round(indexYTop) * width;
 
     cellArr[indexTop] = parseInt(sandInputVal);
-
     seedCellValues.push(cellArr[indexTop]);
-    seedCellIndexes.push(indexTop);
+    !seedCellIndexes.includes(indexTop) && seedCellIndexes.push(indexTop);
+
+    // seedCellIndexes.push(indexTop); // keep this
 
     const indexXBottom =
       centerStartPoint.x - spreadVal * Math.cos(degToRad(-rotateVal - 90));
@@ -555,9 +577,9 @@ function populate() {
       Math.round(indexXBottom) + Math.round(indexYBottom) * width;
 
     cellArr[indexBottom] = parseInt(sandInputVal);
-
     seedCellValues.push(cellArr[indexBottom]);
-    seedCellIndexes.push(indexBottom);
+    !seedCellIndexes.includes(indexBottom) && seedCellIndexes.push(indexBottom);
+    // seedCellIndexes.push(indexBottom); // keep this
   }
 
   if (fourChkbx.checked) {
@@ -571,9 +593,10 @@ function populate() {
     const indexRightTop = Math.round(xRightTop) + Math.round(yRightTop) * width;
 
     cellArr[indexRightTop] = parseInt(sandInputVal);
-
     seedCellValues.push(cellArr[indexRightTop]);
-    seedCellIndexes.push(indexRightTop);
+    !seedCellIndexes.includes(indexRightTop) &&
+      seedCellIndexes.push(indexRightTop);
+    // seedCellIndexes.push(indexRightTop); // keep this
 
     const indexXRightBottom =
       centerStartPoint.x + h * Math.cos(degToRad(-rotateVal + 45));
@@ -584,9 +607,10 @@ function populate() {
       Math.round(indexXRightBottom) + Math.round(indexYRightBottom) * width;
 
     cellArr[indexRightBottom] = parseInt(sandInputVal);
-
     seedCellValues.push(cellArr[indexRightBottom]);
-    seedCellIndexes.push(indexRightBottom);
+    !seedCellIndexes.includes(indexRightBottom) &&
+      seedCellIndexes.push(indexRightBottom);
+    // seedCellIndexes.push(indexRightBottom); // keep this
 
     const xLeftBottom =
       centerStartPoint.x + h * Math.cos(degToRad(-rotateVal + 135));
@@ -595,10 +619,12 @@ function populate() {
 
     const indexLeftBottom =
       Math.round(xLeftBottom) + Math.round(yLeftBottom) * width;
-    cellArr[indexLeftBottom] = parseInt(sandInputVal);
 
+    cellArr[indexLeftBottom] = parseInt(sandInputVal);
     seedCellValues.push(cellArr[indexLeftBottom]);
-    seedCellIndexes.push(indexLeftBottom);
+    !seedCellIndexes.includes(indexLeftBottom) &&
+      seedCellIndexes.push(indexLeftBottom);
+    // seedCellIndexes.push(indexLeftBottom); // keep this
 
     const xLeftTop =
       centerStartPoint.x + h * Math.cos(degToRad(-rotateVal + 225));
@@ -606,20 +632,22 @@ function populate() {
       centerStartPoint.y + h * Math.sin(degToRad(-rotateVal + 225));
 
     const indexLeftTop = Math.round(xLeftTop) + Math.round(yLeftTop) * width;
-    cellArr[indexLeftTop] = parseInt(sandInputVal);
-    //console.log(cellArr[indexLeftTop]);
-    //console.log("SandVal = " + sandInputVal);
 
+    cellArr[indexLeftTop] = parseInt(sandInputVal);
     seedCellValues.push(cellArr[indexLeftTop]);
-    seedCellIndexes.push(indexLeftTop);
+    !seedCellIndexes.includes(indexLeftTop) &&
+      seedCellIndexes.push(indexLeftTop);
+    // seedCellIndexes.push(indexLeftTop); // keep this
   }
 
   // Add all seed inexes' sand amount together and add the total to the total backed up sand
 
+  console.log(seedCellValues, sandRemaining);
   for (let i = 0; i < seedCellValues.length; i++) {
     if (seedCellValues[i] !== undefined) {
+      console.log(seedCellValues[i], sandRemaining);
       sandRemaining = seedCellValues[i];
-      // console.log(seedCellValues[i], sandRemaining);
+      console.log(seedCellValues[i], sandRemaining);
     }
   }
   // console.log(sandRemaining);
@@ -1012,7 +1040,7 @@ function drawGuidelines() {
   circleAngles < 100000 ? (circleAngles += 0.2) : (circleAngles = 0);
 
   circleWidths = Math.sin(circleAngles) + 10;
-  if (showGuidelines.checked && pause === true) {
+  if (showGuidelines.checked && isPaused === true) {
     requestAnimationFrame(drawGuidelines);
   }
 }
@@ -1155,7 +1183,7 @@ drawGuidelines();
 function draw() {
   updateSandRemaining();
   sandRemainingCounter.textContent = sandRemaining;
-  if (pause === false) {
+  if (isPaused === false) {
     for (let i = 0; i < timestepInput.value; i++) {
       update();
     }

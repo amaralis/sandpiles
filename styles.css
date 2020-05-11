@@ -137,7 +137,7 @@ input[type="checkbox"]:hover {
   color: darkgray;
 }
 
-#pause-button {
+#isPaused-button {
   min-width: 200px;
 }
 
