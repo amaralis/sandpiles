@@ -142,7 +142,7 @@ bottomDiv.addEventListener("mouseup", (e) => {
   }
 
   if (target === pHInput && pHInput.value < 6000) {
-    audio.isPaused();
+    audio.pause();
   }
 });
 
@@ -182,7 +182,7 @@ bottomDiv.addEventListener("keydown", (e) => {
   }
 
   if (target === pHInput && pHInput.value < 6000) {
-    audio.isPaused();
+    audio.pause();
   }
 });
 
@@ -220,7 +220,7 @@ bottomDiv.addEventListener("mousemove", (e) => {
   }
 
   if (target === pHInput && pHInput.value < 6000) {
-    audio.isPaused();
+    audio.pause();
   }
 
   if (target === colorSlider1) {
@@ -642,12 +642,12 @@ function populate() {
 
   // Add all seed inexes' sand amount together and add the total to the total backed up sand
 
-  console.log(seedCellValues, sandRemaining);
+  //console.log(seedCellValues, sandRemaining);
   for (let i = 0; i < seedCellValues.length; i++) {
     if (seedCellValues[i] !== undefined) {
-      console.log(seedCellValues[i], sandRemaining);
+      //console.log(seedCellValues[i], sandRemaining);
       sandRemaining = seedCellValues[i];
-      console.log(seedCellValues[i], sandRemaining);
+      //console.log(seedCellValues[i], sandRemaining);
     }
   }
   // console.log(sandRemaining);
