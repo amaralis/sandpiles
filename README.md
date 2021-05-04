@@ -4,8 +4,9 @@ Interactive cellular automata model. Learn more about the Abelian sandpile model
 
 [Live website](https://amaralis.github.io/sandpiles/)
 
-| ![](images/ss1.png) | ![](images/ss2.png) | ![](images/ss3.png) |
-| ![](images/ss4.png) | ![](images/ss5.png) | ![](images/ss6.png) |
+![](images/ss1.png) | ![](images/ss2.png) | ![](images/ss3.png)
+--- | --- | ---
+![](images/ss4.png) | ![](images/ss5.png) | ![](images/ss6.png)
 
 # How to use
 
@@ -22,10 +23,10 @@ Once the algorithm has run its course and the cells are all stable, not toppling
 
 # What I set out to achieve with this project
 
-[X] Understanding how the browser displays images on a canvas
-[X] Understanding how raw pixel instructions work
-[X] Understanding how to navigate cartesian and polar coordinate systems interchangeably
-[X] Creating a tool to visualize emergent patterns and behaviors from simple rules
+- [X] Understanding how the browser displays images on a canvas
+- [X] Understanding how raw pixel instructions work
+- [X] Understanding how to navigate cartesian and polar coordinate systems interchangeably
+- [X] Creating a tool to visualize emergent patterns and behaviors from simple rules
 
 # What I learned with this project
 
