@@ -7,6 +7,7 @@ Interactive cellular automata model. Learn more about the Abelian sandpile model
 ![](images/ss1.png) | ![](images/ss2.png) | ![](images/ss3.png)
 --- | --- | ---
 ![](images/ss4.png) | ![](images/ss5.png) | ![](images/ss6.png)
+![](images/ss7.png) | ![](images/ss8.png) | ![](images/ss9.png)
 
 # How to use
 
